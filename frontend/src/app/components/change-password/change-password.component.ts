@@ -1,10 +1,17 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
 
-import { ReactiveFormsModule } from '@angular/forms';
+import {RouterLink} from '@angular/router';
+import {NgIf} from '@angular/common';
 @Component({
   selector: 'app-change-password',
   templateUrl: './change-password.component.html',
+  imports: [
+    RouterLink,
+    ReactiveFormsModule,
+    FormsModule,
+    NgIf
+  ],
   styleUrls: ['./change-password.component.css']
 })
 export class ChangePasswordComponent {
@@ -31,7 +38,6 @@ export class ChangePasswordComponent {
       return;
     }
 
-    // 🔁 محاكاة الإرسال
     setTimeout(() => {
       this.passwordChanged = true;
       this.changeForm.reset();
