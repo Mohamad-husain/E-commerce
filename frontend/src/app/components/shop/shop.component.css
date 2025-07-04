@@ -1,0 +1,56 @@
+.card {
+  transition: transform 0.3s;
+}
+.card:hover {
+  transform: translateY(-5px);
+}
+
+.form-check-label {
+  cursor: pointer;
+}
+
+.custom-btn {
+  font-weight: 500;
+}
+
+.pagination .page-link {
+  cursor: pointer;
+}
+
+.wishlist-btn {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  background-color: transparent;
+  color: #dc3545;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+.wishlist-btn:hover {
+  background-color: #dc3545;
+  color: #fff;
+}
+.wishlist-btn .bi-heart,
+.wishlist-btn .bi-heart-fill {
+  font-size: 1.1rem;
+}
+
+.pagination .page-link {
+  color: #dc3545;
+  border-color: #e1e1e1;
+  transition: all 0.2s ease;
+}
+
+.pagination .page-item.active .page-link {
+  background-color: #dc3545;
+  border-color: #dc3545;
+  color: #ffffff;
+}
+
+.pagination .page-link:hover {
+  background-color: #dc3545;
+  color: #ffffff;
+}

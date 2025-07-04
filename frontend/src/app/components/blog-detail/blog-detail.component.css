@@ -1,0 +1,9 @@
+.image {
+  max-height: 400px;
+  object-fit: cover;
+}
+
+.lead {
+  font-size: 1.15rem;
+  line-height: 1.9;
+}

@@ -1,0 +1,22 @@
+<div class="color-harmony container py-5" data-aos="fade-up">
+  <h2 class="text-center fw-bold mb-4" data-aos="fade-up">Outfit Coordination</h2>
+
+  <div class="row g-4">
+    <div class="col-md-4" *ngFor="let palette of outfitPalettes" data-aos="zoom-in-up">
+      <div class="card shadow-sm rounded-4">
+        <div class="card-header text-center fw-semibold">
+          {{ palette.name }}
+        </div>
+        <div class="card-body p-0">
+          <div *ngFor="let item of palette.outfit"
+               class="outfit-block d-flex align-items-center justify-content-between px-3 py-3"
+               [style.backgroundColor]="item.color"
+               data-aos="fade-left">
+            <span class="text-white fw-semibold">{{ item.type }}</span>
+            <span class="text-white">{{ item.colorName }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

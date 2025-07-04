@@ -1,0 +1,42 @@
+.blog-card .image {
+  height: 220px;
+  object-fit: cover;
+  border-radius: 5px 5px 0 0;
+}
+
+.blog-card .card-title {
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.blog-card .card-text {
+  color: #555;
+  font-size: 0.95rem;
+  flex-grow: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.blog-card .card-body {
+  display: flex;
+  flex-direction: column;
+}
+
+.btn {
+  margin-left: 110px;
+  width: 170px;
+  color: #dc3545;
+}
+
+.read-more-btn {
+  margin-left: 110px;
+  width: 170px;
+  color: #dc3545;
+  border-color: #dc3545;
+  transition: 0.3s ease;
+}
+
+.read-more-btn:hover {
+  background-color: #dc3545;
+  color: #fff;
+}

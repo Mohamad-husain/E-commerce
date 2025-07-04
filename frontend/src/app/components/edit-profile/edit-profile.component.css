@@ -1,0 +1,13 @@
+.edit-profile-container {
+  min-height: 100vh;
+  background: linear-gradient(to right, #f8f9fa, #e9ecef);
+  padding: 20px;
+}
+
+.edit-card {
+  background-color: #fff;
+  border-radius: 1rem;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 500px;
+}

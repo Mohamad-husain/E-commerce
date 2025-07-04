@@ -1,0 +1,35 @@
+.offer-card .image {
+  height: 230px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.offer-card .card-title {
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+.offer-card .card-text {
+  font-size: 0.95rem;
+  color: #555;
+  flex-grow: 1;
+}
+
+.offer-card .card-body {
+  display: flex;
+  flex-direction: column;
+}
+
+.shop-now-btn {
+  width: 170px;
+  margin: 0 auto;
+  font-weight: 600;
+  transition: 0.3s ease;
+  color: #dc3545;
+  border-color: #dc3545;
+}
+
+.shop-now-btn:hover {
+  background-color: #dc3545;
+  color: #fff;
+}

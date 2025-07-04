@@ -1,0 +1,170 @@
+<div class="container-fluid px-4 py-4">
+  <div class="mb-3" data-aos="fade-left">
+    <a routerLink="/admin" class="btn btn-outline-secondary btn-sm shadow-sm">
+      <i class="bi bi-arrow-left me-2"></i> Back to Dashboard
+    </a>
+  </div>
+
+  <div class="d-flex justify-content-between align-items-center mb-4" data-aos="fade-up">
+    <h3 class="fw-bold text-dark">Products Management</h3>
+    <button class="button2" (click)="openAddModal()">
+      <i class="bi bi-plus-circle me-2"></i> Add Product
+    </button>
+  </div>
+
+  <div class="input-group mb-4" style="max-width: 400px;" data-aos="fade-right">
+    <span class="input-group-text bg-white border-end-0">
+      <i class="bi bi-search text-muted"></i>
+    </span>
+    <input type="text"
+           class="form-control border-start-0 shadow-sm"
+           [(ngModel)]="searchTerm"
+           placeholder="Search by name or category..." />
+  </div>
+
+  <div class="card shadow-sm border-0" data-aos="fade-up">
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="table-light text-center">
+          <tr>
+            <th>Image</th>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Category</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+          </thead>
+          <tbody class="text-center">
+          <tr *ngFor="let product of filteredProducts; let i = index">
+            <td><img [src]="product.image" alt="Product" class="product-img" /></td>
+            <td class="fw-semibold text-dark">{{ product.name }}</td>
+            <td class="text-success fw-bold">${{ product.price }}</td>
+            <td>{{ product.category }}</td>
+            <td>
+                <span class="badge px-3 py-2 rounded-pill text-white fw-semibold"
+                      [ngClass]="{
+                        'bg-success': product.status === 'Available',
+                        'bg-secondary': product.status === 'Out of Stock'
+                      }">
+                  {{ product.status }}
+                </span>
+            </td>
+            <td>
+              <div class="d-flex justify-content-center gap-2">
+                <button class="btn btn-outline-primary btn-sm rounded-pill px-3 " (click)="openEditModal(i)">
+                  <i class="bi bi-pencil-square me-1"></i>Edit
+                </button>
+                <button class="btn btn-outline-danger btn-sm rounded-pill px-3 " (click)="openDeleteModal(i)">
+                  <i class="bi bi-trash me-1"></i>Delete
+                </button>
+              </div>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 shadow">
+        <div class="modal-header bg-danger text-white">
+          <h5 class="modal-title">Confirm Deletion</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">Are you sure you want to delete this product?</div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button class="btn btn-danger" (click)="confirmDelete()">Delete</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="editModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 shadow">
+        <div class="modal-header bg-primary text-white">
+          <h5 class="modal-title">Edit Product</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <form #editForm="ngForm">
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Name</label>
+              <input type="text" class="form-control" [(ngModel)]="editedProduct.name" name="name">
+            </div>
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Price</label>
+              <input type="number" class="form-control" [(ngModel)]="editedProduct.price" name="price">
+            </div>
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Category</label>
+              <input type="text" class="form-control" [(ngModel)]="editedProduct.category" name="category">
+            </div>
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Status</label>
+              <select class="form-select" [(ngModel)]="editedProduct.status" name="status">
+                <option>Available</option>
+                <option>Out of Stock</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Upload Image</label>
+              <input type="file" class="form-control" (change)="handleImageUpload($event, 'edit')">
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button class="btn btn-primary" (click)="saveChanges()">Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="addModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 shadow">
+        <div class="modal-header bg-success text-white">
+          <h5 class="modal-title">Add New Product</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <form #addForm="ngForm">
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Name</label>
+              <input type="text" class="form-control" [(ngModel)]="newProduct.name" name="name">
+            </div>
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Price</label>
+              <input type="number" class="form-control" [(ngModel)]="newProduct.price" name="price">
+            </div>
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Category</label>
+              <input type="text" class="form-control" [(ngModel)]="newProduct.category" name="category">
+            </div>
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Status</label>
+              <select class="form-select" [(ngModel)]="newProduct.status" name="status">
+                <option>Available</option>
+                <option>Out of Stock</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Upload Image</label>
+              <input type="file" class="form-control" (change)="handleImageUpload($event, 'new')">
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button class="btn btn-success" (click)="addProduct()">Add</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

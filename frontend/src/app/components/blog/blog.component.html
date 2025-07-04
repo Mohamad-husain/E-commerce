@@ -1,0 +1,16 @@
+<div class="container py-5" data-aos="zoom-in-up">
+  <h2 class="text-center fw-bold mb-4">Blog</h2>
+
+  <div class="row g-4">
+    <div class="col-md-4" *ngFor="let post of blogPosts">
+      <div class="card h-100 shadow-sm blog-card d-flex flex-column" data-aos="zoom-in-up" data-aos-delay="150">
+        <img [src]="post.image" class="image card-img-top" alt="{{ post.title }}" loading="lazy">
+        <div class="card-body d-flex flex-column">
+          <h5 class="card-title">{{ post.title }}</h5>
+          <p class="card-text flex-grow-1">{{ post.excerpt }}</p>
+          <a [routerLink]="['/blog', post.id]" class="btn btn-outline-primary read-more-btn mt-auto">Read More</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

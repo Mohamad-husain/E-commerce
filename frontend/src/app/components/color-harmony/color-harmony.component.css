@@ -1,0 +1,19 @@
+.color-harmony {
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.outfit-block {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  font-weight: 500;
+  transition: 0.3s ease;
+}
+
+.card {
+  overflow: hidden;
+}
+
+.card-header {
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #dee2e6;
+  font-size: 1.1rem;
+}

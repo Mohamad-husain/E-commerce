@@ -1,0 +1,11 @@
+<div class="container py-5" *ngIf="blogPost">
+  <h2 class="fw-bold mb-4" data-aos="fade-up">{{ blogPost.title }}</h2>
+
+  <img [src]="blogPost.image"
+       class="image img-fluid rounded mb-4"
+       alt="{{ blogPost.title }}"
+       loading="lazy"
+       data-aos="zoom-in">
+
+  <p class="lead" data-aos="fade-up" data-aos-delay="200">{{ blogPost.content }}</p>
+</div>

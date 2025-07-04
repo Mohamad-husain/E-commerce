@@ -1,0 +1,23 @@
+.card {
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
+}
+
+.card-header {
+  background-color: #f8f9fa;
+  font-weight: 500;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+}
+
+.order-img {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.order-item-row {
+  border-bottom: 1px dashed #ddd;
+  padding-bottom: 5px;
+}

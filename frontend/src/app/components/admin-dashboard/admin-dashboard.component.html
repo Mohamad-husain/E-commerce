@@ -1,0 +1,113 @@
+<div class="admin-dashboard-container d-flex" data-aos="fade-up">
+  <div class="sidebar d-flex flex-column justify-content-between p-4" data-aos="fade-right">
+    <div>
+      <h5 class="fw-bold mb-4">Admin</h5>
+      <ul class="nav flex-column">
+        <li class="nav-item"><a class="nav-link" routerLink="/admin/dashboard">Dashboard</a></li>
+        <li class="nav-item"><a class="nav-link" routerLink="/admin/products">Products</a></li>
+        <li class="nav-item"><a class="nav-link" routerLink="/admin/orders">Orders</a></li>
+        <li class="nav-item"><a class="nav-link" routerLink="/admin/users">Users</a></li>
+      </ul>
+    </div>
+
+    <div class="logout-wrapper mt-4">
+      <a class="Btn" routerLink="/">
+        <div class="sign">
+          <svg viewBox="0 0 512 512">
+            <path d="M377.9 105.9L500.7 228.7c7.2 7.2 11.3 17.1 11.3 27.3s-4.1 20.1-11.3 27.3L377.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9l0-62.1-128 0c-17.7 0-32-14.3-32-32l0-64c0-17.7 14.3-32 32-32l128 0 0-62.1c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.6 24 9.9zM160 96L96 96c-17.7 0-32 14.3-32 32l0 256c0 17.7 14.3 32 32 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-64 0c-53 0-96-43-96-96L0 128C0 75 43 32 96 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32z"></path>
+          </svg>
+        </div>
+        <div class="text">Logout</div>
+      </a>
+    </div>
+  </div>
+
+  <div class="main-content flex-grow-1 p-4">
+    <div class="d-flex justify-content-between align-items-center mb-4" data-aos="fade-up">
+      <h3 class="fw-bold">Dashboard</h3>
+    </div>
+
+    <div class="row mb-4">
+      <div class="col-md-4 mb-3" *ngFor="let stat of stats" data-aos="zoom-in" data-aos-delay="100">
+        <div class="card stat-card text-center shadow-sm">
+          <p class="text-muted mb-1">{{ stat.label }}</p>
+          <h4 class="fw-bold">{{ stat.value }}</h4>
+        </div>
+      </div>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mb-3" data-aos="fade-up">
+      <h5 class="fw-semibold mb-0">Analytics</h5>
+      <select class="form-select w-auto" [(ngModel)]="selectedRange" (change)="updateCharts()">
+        <option *ngFor="let option of chartRanges" [value]="option">{{ option }}</option>
+      </select>
+    </div>
+
+    <div class="row charts-row">
+      <div class="col-md-6 mb-4" data-aos="fade-up" data-aos-delay="100">
+        <div class="card chart-card shadow-sm">
+          <div class="card-body">
+            <h6 class="fw-semibold mb-3">Orders Per Month</h6>
+            <div class="chart-container">
+              <canvas baseChart [data]="barChartData" [options]="barChartOptions" [type]="barChartType"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 mb-4" data-aos="fade-up" data-aos-delay="200">
+        <div class="card chart-card shadow-sm">
+          <div class="card-body">
+            <h6 class="fw-semibold mb-3">Order Status Breakdown</h6>
+            <div class="chart-container">
+              <canvas baseChart [data]="pieChartData" [options]="pieChartOptions" [type]="pieChartType"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card chart-card shadow-sm mb-4" data-aos="fade-up" data-aos-delay="300">
+      <div class="card-body">
+        <h6 class="fw-semibold mb-3">New Users and Sales</h6>
+        <div class="chart-container">
+          <canvas baseChart [data]="lineChartData" [options]="lineChartOptions" [type]="lineChartType"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="card p-4 shadow-sm mt-4" data-aos="fade-up" data-aos-delay="400">
+      <h5 class="mb-3 fw-semibold">Latest Orders</h5>
+      <div class="table-responsive">
+        <table class="table table-hover align-middle">
+          <thead>
+          <tr>
+            <th class="table-header">Customer</th>
+            <th class="table-header">Date</th>
+            <th class="table-header">Total</th>
+            <th class="table-header text-center">Status</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let order of latestOrders">
+            <td class="table-data">{{ order.name }}</td>
+            <td class="table-data">{{ order.date }}</td>
+            <td class="table-data">${{ order.total }}</td>
+            <td class="table-data">
+              <div class="status-wrapper">
+                  <span class="badge"
+                        [ngClass]="{
+                      'bg-success': order.status === 'Completed',
+                      'bg-warning': order.status === 'Pending',
+                      'bg-danger': order.status === 'Cancelled'
+                    }">
+                    {{ order.status }}
+                  </span>
+              </div>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

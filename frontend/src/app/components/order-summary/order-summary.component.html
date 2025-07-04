@@ -1,0 +1,49 @@
+<div class="container py-5" *ngIf="order">
+  <h2 class="order-title fw-bold mb-4 text-center" data-aos="fade-down">Order Summary</h2>
+
+  <div class="row">
+    <div class="col-md-8" data-aos="fade-right">
+      <table class="order-table table table-bordered">
+        <thead class="order-thead table-light">
+        <tr>
+          <th class="order-th">Product</th>
+          <th class="order-th">Price</th>
+          <th class="order-th">Qty</th>
+          <th class="order-th">Total</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let item of order.items">
+          <td class="order-td d-flex align-items-center">
+            <img [src]="item.image" class="order-img me-2 rounded" />
+            {{ item.name }}
+          </td>
+          <td class="order-td">{{ item.price | currency }}</td>
+          <td class="order-td">{{ item.quantity }}</td>
+          <td class="order-td">{{ item.price * item.quantity | currency }}</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="col-md-4" data-aos="fade-left">
+      <div class="border p-3 rounded mb-3">
+        <h5 class="order-subtitle fw-bold mb-2">Shipping Info</h5>
+        <p><strong>Name:</strong> {{ order.shipping.name }}</p>
+        <p><strong>Email:</strong> {{ order.shipping.email }}</p>
+        <p><strong>Address:</strong> {{ order.shipping.address }}, {{ order.shipping.city }}, {{ order.shipping.country }}</p>
+        <p><strong>Postal Code:</strong> {{ order.shipping.zip }}</p>
+      </div>
+
+      <div class="border p-3 rounded mb-3">
+        <h5 class="order-subtitle fw-bold mb-2">Payment Method</h5>
+        <p>{{ order.payment.name }} - {{ order.payment.cardNumber }}</p>
+      </div>
+
+      <div class="text-end">
+        <h5 class="order-total fw-bold">Total: {{ getTotal() | currency }}</h5>
+        <button class="btn btn-success w-100 mt-3" (click)="confirmOrder()">Confirm Order</button>
+      </div>
+    </div>
+  </div>
+</div>

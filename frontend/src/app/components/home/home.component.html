@@ -1,0 +1,52 @@
+<div class="hero-section d-flex align-items-center">
+  <div class="container">
+    <div class="hero-text" data-aos="fade-up">
+      <p class="text-uppercase small">Spring / Summer Collection 2025</p>
+      <h1 class="display-4 fw-bold mb-3">Get up to 30% Off<br>New Arrivals</h1>
+      <button routerLink="/shop" class="btn btn-danger px-4 py-2">Shop Now</button>
+    </div>
+  </div>
+</div>
+
+<div class="categories py-5 bg-white">
+  <div class="container">
+    <div class="row text-center justify-content-center">
+      <div class="col-6 col-sm-4 col-md-3 col-lg-2 mb-4" *ngFor="let cat of categories" data-aos="fade-up">
+        <a [routerLink]="['/shop']" [queryParams]="{ category: cat.name }" class="text-decoration-none text-dark d-block position-relative">
+          <div class="category-wrapper position-relative d-inline-block">
+            <img [src]="cat.image" [alt]="cat.name" class="category-image mb-2">
+            <span class="product-count badge bg-dark rounded-circle position-absolute d-flex justify-content-center align-items-center">
+              {{ getCategoryCount(cat.name) }}
+            </span>
+          </div>
+          <h6 class="fw-bold mt-2">{{ cat.name }}</h6>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="featured pt-5 pb-3">
+  <div class="container">
+    <h2 class="text-center fw-bold mb-4" data-aos="fade-up">Featured Products</h2>
+    <div class="row g-4">
+      <div class="col-md-3 mb-3" *ngFor="let product of featuredProducts" data-aos="zoom-in-up">
+        <div class="card h-100 text-center product-card">
+          <div class="image-container">
+            <img [src]="product.images[0]" [alt]="product.name" class="main-img card-img-top">
+            <img [src]="product.images[1]" [alt]="product.name" class="hover-img card-img-top">
+          </div>
+          <div class="card-body">
+            <h5 class="card-title">{{ product.name }}</h5>
+            <p class="card-text">{{ product.price | currency }}</p>
+            <a class="btn btn-dark" [routerLink]="['/product', product.id]">View Details</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="text-center my-3" data-aos="fade-up">
+  <button routerLink="/shop" class="btn btn-danger px-4 py-2">View More</button>
+</div>

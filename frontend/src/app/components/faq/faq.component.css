@@ -1,0 +1,9 @@
+.accordion-button {
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+.accordion-body {
+  font-size: 0.95rem;
+  line-height: 1.7;
+}

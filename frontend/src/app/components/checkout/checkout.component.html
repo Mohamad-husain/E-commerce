@@ -1,0 +1,73 @@
+<div class="container py-5">
+  <h2 class="text-center mb-4 fw-bold" data-aos="fade-down">Checkout</h2>
+
+  <div class="row g-5">
+    <div class="col-md-6" data-aos="fade-right">
+      <h4 class="checkout-section-title fw-semibold mb-3">Shipping Information</h4>
+      <form #shippingForm="ngForm" class="checkout-form">
+        <div class="mb-3">
+          <label class="form-label">Full Name</label>
+          <input type="text" class="form-control" [(ngModel)]="shipping.name" name="name" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Email</label>
+          <input type="email" class="form-control" [(ngModel)]="shipping.email" name="email" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Address</label>
+          <input type="text" class="form-control" [(ngModel)]="shipping.address" name="address" required>
+        </div>
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="form-label">City</label>
+            <input type="text" class="form-control" [(ngModel)]="shipping.city" name="city" required>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Country</label>
+            <input type="text" class="form-control" [(ngModel)]="shipping.country" name="country" required>
+          </div>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Postal Code</label>
+          <input type="text" class="form-control" [(ngModel)]="shipping.zip" name="zip" required>
+        </div>
+      </form>
+    </div>
+
+    <div class="col-md-6" data-aos="fade-left">
+      <h4 class="checkout-section-title fw-semibold mb-3">Payment Details</h4>
+      <form #paymentForm="ngForm" class="checkout-form">
+        <div class="mb-3">
+          <label class="form-label">Cardholder Name</label>
+          <input type="text" class="form-control" [(ngModel)]="payment.name" name="cardName" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Card Number</label>
+          <input type="text" class="form-control" [(ngModel)]="payment.cardNumber" name="cardNumber" required>
+        </div>
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Expiry</label>
+            <input type="text" class="form-control" placeholder="MM/YY" [(ngModel)]="payment.expiry" name="expiry" required>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label">CVV</label>
+            <input type="text" class="form-control" [(ngModel)]="payment.cvv" name="cvv" required>
+          </div>
+        </div>
+      </form>
+
+      <div class="border-top mt-4 pt-3" data-aos="zoom-in">
+        <h5 class="fw-bold">Order Summary</h5>
+        <div *ngFor="let item of cartItems" class="d-flex justify-content-between">
+          <div><strong>{{ item.name }}</strong> x{{ item.quantity }}</div>
+          <div>{{ item.price * item.quantity | currency }}</div>
+        </div>
+        <div class="mt-3 text-end">
+          <h5>Total: {{ getTotal() | currency }}</h5>
+          <button class="place-order-btn btn btn-success mt-2 w-100" (click)="placeOrder()">Place Order</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

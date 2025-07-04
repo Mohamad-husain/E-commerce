@@ -1,0 +1,30 @@
+.navbar .nav-link {
+  padding: 0.75rem 1rem;
+  color: #333;
+  transition: color 0.2s;
+}
+
+.navbar .nav-link.active,
+.navbar .nav-link:hover {
+  color: #dc3545;
+}
+
+.bi {
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+.dropdown-menu {
+  min-width: 160px;
+  font-size: 14px;
+}
+
+.logo-img {
+  height: 40px;
+  max-width: 100%;
+  object-fit: contain;
+}
+nav.navbar {
+  position: relative;
+  z-index: 1050;
+}

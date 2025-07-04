@@ -1,0 +1,12 @@
+.checkout-form .form-control {
+  border-radius: 0.375rem;
+}
+
+.checkout-section-title {
+  font-size: 1.25rem;
+}
+
+.place-order-btn {
+  font-weight: 600;
+  font-size: 1rem;
+}

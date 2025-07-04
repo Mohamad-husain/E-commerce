@@ -1,0 +1,22 @@
+<div class="container py-5">
+  <h2 class="text-center fw-bold mb-4" data-aos="fade-up">Offers</h2>
+
+  <div class="row g-4">
+    <div class="col-md-4" *ngFor="let offer of offers" data-aos="zoom-in-up" data-aos-delay="100">
+      <div class="card h-100 shadow-sm offer-card">
+        <img [src]="offer.image" class="image card-img-top" alt="{{ offer.title }}">
+        <div class="card-body text-center d-flex flex-column">
+          <h5 class="card-title">{{ offer.title }}</h5>
+          <p class="card-text flex-grow-1">{{ offer.description }}</p>
+          <a
+            [routerLink]="['/shop']"
+            [queryParams]="{ category: offer.category }"
+            class="btn btn-outline-danger shop-now-btn mt-auto"
+          >
+            Shop Now
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
