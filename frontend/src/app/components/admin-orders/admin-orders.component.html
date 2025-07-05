@@ -97,7 +97,13 @@
           <h6 class="mb-2">Items:</h6>
           <ul class="list-group list-group-flush">
             <li class="list-group-item" *ngFor="let item of selectedOrder?.items">
-              {{ item.name }} - Qty: {{ item.quantity }} - ${{ item.price }}
+              <div class="fw-semibold">{{ item.name }}</div>
+              <small class="text-muted">
+                Qty: {{ item.quantity }} |
+                Price: ${{ item.price }} |
+                Size: {{ item.size || 'N/A' }} |
+                Color: {{ item.color || 'N/A' }}
+              </small>
             </li>
           </ul>
         </div>
@@ -108,7 +114,6 @@
     </div>
   </div>
 
-  <!-- 🔸 Modal: Delete -->
   <div class="modal fade" id="deleteModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content border-0 shadow-lg rounded-4">

@@ -43,7 +43,16 @@ export class CartComponent implements OnInit {
     return this.cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
   }
 
+  clearCart() {
+    this.cartService.clearCart();
+    this.cartItems = [];
+    this.notificationService.show('🗑️ Cart cleared');
+  }
+
+
   isCartEmpty(): boolean {
     return this.cartItems.length === 0;
   }
+
+
 }

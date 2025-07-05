@@ -29,8 +29,8 @@ export class AdminOrdersComponent implements OnInit {
       total: 75.55,
       status: 'Pending',
       items: [
-        { name: 'Classic T-Shirt', quantity: 2, price: 25.99 },
-        { name: 'Leather Jacket', quantity: 1, price: 68.52 }
+        { name: 'Classic T-Shirt', quantity: 2, price: 25.99, size: 'M', color: 'Black' },
+        { name: 'Leather Jacket', quantity: 1, price: 68.52, size: 'L', color: 'Brown' }
       ]
     },
     {
@@ -40,8 +40,8 @@ export class AdminOrdersComponent implements OnInit {
       total: 89.99,
       status: 'Delivered',
       items: [
-        { name: 'Running Shoes', quantity: 1, price: 59.99 },
-        { name: 'Cap', quantity: 1, price: 30.0 }
+        { name: 'Running Shoes', quantity: 1, price: 59.99, size: '42', color: 'White' },
+        { name: 'Cap', quantity: 1, price: 30.0, size: 'One Size', color: 'Red' }
       ]
     },
     {
@@ -51,7 +51,7 @@ export class AdminOrdersComponent implements OnInit {
       total: 45.0,
       status: 'Shipped',
       items: [
-        { name: 'White Shirt', quantity: 3, price: 15.0 }
+        { name: 'White Shirt', quantity: 3, price: 15.0, size: 'L', color: 'White' }
       ]
     }
   ];

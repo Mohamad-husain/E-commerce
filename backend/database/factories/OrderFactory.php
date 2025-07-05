@@ -11,7 +11,7 @@ class OrderFactory extends Factory
         return [
             'user_id' => 1,
             'total_price' => $this->faker->numberBetween(50, 500),
-            'status' => 'Confirmed',
+            'status' => $this->faker->randomElement(['Pending', 'Processing', 'Shipped', 'Delivered', 'Cancelled']),
         ];
     }
 }

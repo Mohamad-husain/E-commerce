@@ -1,12 +1,16 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminOrderController;
 use App\Http\Controllers\Admin\AdminProductController;
+use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\DashboardController;
-use Illuminate\Http\Request;
+use App\Http\Controllers\Auth\UserController;
+use App\Http\Controllers\Cart\CartController;
+use App\Http\Controllers\Order\OrderController;
+use App\Http\Controllers\Product\ProductController;
+use App\Http\Controllers\Product\SpecialOfferController;
+use App\Http\Controllers\Product\WishlistController;
 use Illuminate\Support\Facades\Route;
-
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\ProductController;
 
 //Auth
 Route::post('/register', [UserController::class, 'register']);
@@ -23,8 +27,29 @@ Route::get('/products/{id}', [ProductController::class, 'getProductDetails']);
 Route::get('/filter-products', [ProductController::class, 'filterProducts']);
 Route::get('/categories', [ProductController::class, 'getAllCategories']);
 Route::get('/categories/{id}/products', [ProductController::class, 'getProductsByCategory']);
-
 Route::middleware('auth:sanctum')->post('/logout', [UserController::class, 'logout']);
+
+//favorites
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/wishlist', [WishlistController::class, 'index']);
+    Route::post('/wishlist', [WishlistController::class, 'store']);
+    Route::delete('/wishlist/{product_id}', [WishlistController::class, 'destroy']);
+});
+
+//add to cart
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/cart', [CartController::class, 'index']);
+    Route::post('/cart', [CartController::class, 'store']);
+    Route::put('/cart/{id}', [CartController::class, 'updateQuantity']);
+    Route::delete('/cart/{id}', [CartController::class, 'destroy']);
+    Route::delete('/cart', [CartController::class, 'clear']);
+});
+
+//offer
+Route::get('/products-with-offers', [SpecialOfferController::class, 'getProductsWithOffers']);
+
+//order
+Route::middleware('auth:sanctum')->get('/my-orders', [OrderController::class, 'myOrders']);
 
 
 // Admin Dashboard
@@ -39,5 +64,14 @@ Route::get('/admin/showDetails/{id}', [AdminProductController::class, 'showDetai
 Route::post('/admin/addProduct', [AdminProductController::class, 'AddProduct']);
 Route::put('/admin/updateProduct/{id}', [AdminProductController::class, 'UpdateProduct']);
 Route::delete('/admin/deleteProduct/{id}', [AdminProductController::class, 'DeleteProduct']);
+// Admin Order
+Route::get('/admin/allOrder', [AdminOrderController::class, 'AllOrder']);
+Route::get('/admin/detailsOrder/{id}', [AdminOrderController::class, 'DetailsOrder']);
+Route::put('/admin/orders/{id}/status', [AdminOrderController::class, 'UpdateStatus']);
+Route::delete('/admin/deleteOrders/{id}', [AdminOrderController::class, 'DeleteOrder']);
+// Admin Users
+Route::get('/admin/users', [AdminUserController::class, 'getAllUsers']);
+Route::delete('/admin/users/{id}', [AdminUserController::class, 'deleteUser']);
+Route::put('/admin/users/{id}/toggle-role', [AdminUserController::class, 'toggleRole']);
 
 

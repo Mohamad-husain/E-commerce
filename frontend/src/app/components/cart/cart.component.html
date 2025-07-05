@@ -1,5 +1,10 @@
 <div class="container py-5" *ngIf="cartItems.length > 0; else emptyCart">
-  <h2 class="mb-4 fw-bold text-center" data-aos="fade-down">🛒 Your Shopping Cart</h2>
+  <div class="d-flex justify-content-between align-items-center mb-4" data-aos="fade-down">
+    <h2 class="fw-bold mb-0">🛒 Your Shopping Cart</h2>
+    <button class="btn btn-clear-cart" (click)="clearCart()">
+      <i class="bi bi-x-circle-fill me-2"></i> Clear Cart
+    </button>
+  </div>
 
   <div class="row g-4">
     <div class="col-md-4" *ngFor="let item of cartItems; let i = index" data-aos="fade-up" [attr.data-aos-delay]="i * 100">
@@ -10,9 +15,7 @@
           <p class="cart-item-info"><strong>Size:</strong> {{ item.size }}</p>
           <p class="cart-item-info">
             <strong>Color:</strong>
-            <span [style.color]="item.color" class=" text-capitalize">
-            {{ item.color }}
-            </span>
+            <span [style.color]="item.color" class=" text-capitalize">{{ item.color }}</span>
           </p>
           <p class="cart-item-info"><strong>Price:</strong> {{ item.price | currency }}</p>
           <p class="cart-item-info"><strong>Quantity:</strong></p>
@@ -33,6 +36,7 @@
     <a routerLink="/shop" class="btn btn-outline-secondary mb-3 mb-md-0" data-aos="fade-right">
       <i class="bi bi-arrow-left"></i> Continue Shopping
     </a>
+
     <div class="text-end" data-aos="fade-left">
       <h4 class="fw-bold mb-3">Total: {{ getTotal() | currency }}</h4>
       <a [routerLink]="isCartEmpty() ? null : '/checkout'"
