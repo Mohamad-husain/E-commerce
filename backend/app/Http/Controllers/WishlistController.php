@@ -1,0 +1,48 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\WishlistItem;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
+class WishlistController extends Controller
+{
+    // ✅ عرض كل المنتجات المفضلة للمستخدم الحالي
+    public function index()
+    {
+        $wishlist = WishlistItem::with('product')->where('user_id', Auth::id())->get();
+        return response()->json($wishlist);
+    }
+
+    // ✅ إضافة منتج إلى المفضلة
+    public function store(Request $request)
+    {
+        $request->validate([
+            'product_id' => 'required|exists:products,id'
+        ]);
+
+        $item = WishlistItem::firstOrCreate([
+            'user_id' => Auth::id(),
+            'product_id' => $request->product_id
+        ]);
+
+        return response()->json(['message' => 'Product added to wishlist', 'data' => $item], 201);
+    }
+
+    // ✅ حذف منتج من المفضلة
+    public function destroy($id)
+    {
+        $item = WishlistItem::where('user_id', Auth::id())
+                            ->where('product_id', $id)
+                            ->first();
+
+        if (!$item) {
+            return response()->json(['message' => 'Item not found in wishlist'], 404);
+        }
+
+        $item->delete();
+
+        return response()->json(['message' => 'Product removed from wishlist']);
+    }
+}
