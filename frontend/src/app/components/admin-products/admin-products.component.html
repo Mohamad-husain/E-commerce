@@ -26,37 +26,46 @@
     <div class="card-body p-0">
       <div class="table-responsive">
         <table class="table table-hover align-middle mb-0">
-          <thead class="table-light text-center">
-          <tr>
+          <thead class="table-light">
+          <tr class="text-center">
             <th>Image</th>
             <th>Name</th>
             <th>Price</th>
+            <th>Discount</th>
             <th>Category</th>
+            <th>Inventory</th>
             <th>Status</th>
             <th>Actions</th>
           </tr>
           </thead>
-          <tbody class="text-center">
-          <tr *ngFor="let product of filteredProducts; let i = index">
+          <tbody>
+          <tr *ngFor="let product of filteredProducts; let i = index" class="text-center">
             <td><img [src]="product.image" alt="Product" class="product-img" /></td>
             <td class="fw-semibold text-dark">{{ product.name }}</td>
-            <td class="text-success fw-bold">${{ product.price }}</td>
+            <td class="text-success fw-bold">${{ product.price | number:'1.2-2' }}</td>
+            <td class="text-danger fw-bold">{{ product.discount || 0 }}%</td>
             <td>{{ product.category }}</td>
             <td>
-                <span class="badge px-3 py-2 rounded-pill text-white fw-semibold"
-                      [ngClass]="{
-                        'bg-success': product.status === 'Available',
-                        'bg-secondary': product.status === 'Out of Stock'
-                      }">
-                  {{ product.status }}
-                </span>
+              <button class="btn btn-outline-primary btn-sm rounded-pill px-3" (click)="openInventoryModal(i)">
+                <i class="bi bi-box-seam me-1"></i>
+                {{ getTotalVariations(product) }} Variations
+              </button>
+            </td>
+            <td>
+              <span class="status-badge d-inline-block text-center" style="min-width: 100px;"
+                    [ngClass]="{
+                  'available-badge': product.status === 'Available',
+                  'outofstock-badge': product.status === 'Out of Stock'
+                }">
+                {{ product.status }}
+              </span>
             </td>
             <td>
               <div class="d-flex justify-content-center gap-2">
-                <button class="btn btn-outline-primary btn-sm rounded-pill px-3 " (click)="openEditModal(i)">
+                <button class="btn btn-outline-primary btn-sm rounded-pill px-3" (click)="openEditModal(i)">
                   <i class="bi bi-pencil-square me-1"></i>Edit
                 </button>
-                <button class="btn btn-outline-danger btn-sm rounded-pill px-3 " (click)="openDeleteModal(i)">
+                <button class="btn btn-outline-danger btn-sm rounded-pill px-3" (click)="openDeleteModal(i)">
                   <i class="bi bi-trash me-1"></i>Delete
                 </button>
               </div>
@@ -68,6 +77,7 @@
     </div>
   </div>
 
+  <!-- Delete Modal -->
   <div class="modal fade" id="deleteModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content border-0 shadow">
@@ -84,8 +94,9 @@
     </div>
   </div>
 
+  <!-- Edit Modal -->
   <div class="modal fade" id="editModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
       <div class="modal-content border-0 shadow">
         <div class="modal-header bg-primary text-white">
           <h5 class="modal-title">Edit Product</h5>
@@ -93,41 +104,60 @@
         </div>
         <div class="modal-body">
           <form #editForm="ngForm">
-            <div class="mb-3">
-              <label class="form-label fw-semibold">Name</label>
-              <input type="text" class="form-control" [(ngModel)]="editedProduct.name" name="name">
-            </div>
-            <div class="mb-3">
-              <label class="form-label fw-semibold">Price</label>
-              <input type="number" class="form-control" [(ngModel)]="editedProduct.price" name="price">
-            </div>
-            <div class="mb-3">
-              <label class="form-label fw-semibold">Category</label>
-              <input type="text" class="form-control" [(ngModel)]="editedProduct.category" name="category">
-            </div>
-            <div class="mb-3">
-              <label class="form-label fw-semibold">Status</label>
-              <select class="form-select" [(ngModel)]="editedProduct.status" name="status">
-                <option>Available</option>
-                <option>Out of Stock</option>
-              </select>
-            </div>
-            <div class="mb-3">
-              <label class="form-label fw-semibold">Upload Image</label>
-              <input type="file" class="form-control" (change)="handleImageUpload($event, 'edit')">
+            <div class="row">
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Name</label>
+                  <input type="text" class="form-control" [(ngModel)]="editedProduct.name" name="name" required>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Price</label>
+                  <input type="number" class="form-control" [(ngModel)]="editedProduct.price" name="price" min="0" step="0.01" required>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Discount (%)</label>
+                  <input type="number" class="form-control" [(ngModel)]="editedProduct.discount" name="discount" min="0" max="100">
+                </div>
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Category</label>
+                  <select class="form-select" [(ngModel)]="editedProduct.category" name="category" required>
+                    <option value="Footwear">Footwear</option>
+                    <option value="Clothing">Clothing</option>
+                    <option value="Accessories">Accessories</option>
+                    <option value="Sports">Sports</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Status</label>
+                  <select class="form-select" [(ngModel)]="editedProduct.status" name="status" required>
+                    <option>Available</option>
+                    <option>Out of Stock</option>
+                  </select>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Upload Image</label>
+                  <input type="file" class="form-control" (change)="handleImageUpload($event, 'edit')" accept="image/*">
+                  <div class="mt-2">
+                    <img [src]="editedProduct.image" alt="Product Image" class="img-thumbnail" style="max-height: 150px;" *ngIf="editedProduct.image">
+                  </div>
+                </div>
+              </div>
             </div>
           </form>
         </div>
         <div class="modal-footer">
           <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-          <button class="btn btn-primary" (click)="saveChanges()">Save</button>
+          <button class="btn btn-primary" (click)="saveChanges()" [disabled]="!editForm.valid">Save Changes</button>
         </div>
       </div>
     </div>
   </div>
 
+  <!-- Add Modal -->
   <div class="modal fade" id="addModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
       <div class="modal-content border-0 shadow">
         <div class="modal-header bg-success text-white">
           <h5 class="modal-title">Add New Product</h5>
@@ -135,34 +165,180 @@
         </div>
         <div class="modal-body">
           <form #addForm="ngForm">
-            <div class="mb-3">
-              <label class="form-label fw-semibold">Name</label>
-              <input type="text" class="form-control" [(ngModel)]="newProduct.name" name="name">
-            </div>
-            <div class="mb-3">
-              <label class="form-label fw-semibold">Price</label>
-              <input type="number" class="form-control" [(ngModel)]="newProduct.price" name="price">
-            </div>
-            <div class="mb-3">
-              <label class="form-label fw-semibold">Category</label>
-              <input type="text" class="form-control" [(ngModel)]="newProduct.category" name="category">
-            </div>
-            <div class="mb-3">
-              <label class="form-label fw-semibold">Status</label>
-              <select class="form-select" [(ngModel)]="newProduct.status" name="status">
-                <option>Available</option>
-                <option>Out of Stock</option>
-              </select>
-            </div>
-            <div class="mb-3">
-              <label class="form-label fw-semibold">Upload Image</label>
-              <input type="file" class="form-control" (change)="handleImageUpload($event, 'new')">
+            <div class="row">
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Name</label>
+                  <input type="text" class="form-control" [(ngModel)]="newProduct.name" name="name" required>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Price</label>
+                  <input type="number" class="form-control" [(ngModel)]="newProduct.price" name="price" min="0" step="0.01" required>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Discount (%)</label>
+                  <input type="number" class="form-control" [(ngModel)]="newProduct.discount" name="discount" min="0" max="100">
+                </div>
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Category</label>
+                  <select class="form-select" [(ngModel)]="newProduct.category" name="category" required>
+                    <option value="Footwear">Footwear</option>
+                    <option value="Clothing">Clothing</option>
+                    <option value="Accessories">Accessories</option>
+                    <option value="Sports">Sports</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Status</label>
+                  <select class="form-select" [(ngModel)]="newProduct.status" name="status" required>
+                    <option>Available</option>
+                    <option>Out of Stock</option>
+                  </select>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Upload Image</label>
+                  <input type="file" class="form-control" (change)="handleImageUpload($event, 'new')" accept="image/*" required>
+                  <div class="mt-2">
+                    <img [src]="newProduct.image" alt="Preview" class="img-thumbnail" style="max-height: 100px;" *ngIf="newProduct.image">
+                  </div>
+                </div>
+              </div>
             </div>
           </form>
         </div>
         <div class="modal-footer">
           <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-          <button class="btn btn-success" (click)="addProduct()">Add</button>
+          <button class="btn btn-success" (click)="addProduct()" [disabled]="!addForm.valid">Add Product</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Inventory Modal -->
+  <div class="modal fade" id="inventoryModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+      <div class="modal-content border-0 shadow">
+        <div class="modal-header bg-info text-white">
+          <h5 class="modal-title">Product Inventory - {{selectedProduct.name}}</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-md-4">
+              <img [src]="selectedProduct.image" alt="Product" class="img-fluid rounded mb-3 border">
+              <div class="card mb-3">
+                <div class="card-body">
+                  <h5 class="card-title fw-bold">{{selectedProduct.name}}</h5>
+                  <p class="card-text text-muted">{{selectedProduct.category}}</p>
+                  <h5 class="text-success fw-bold">${{selectedProduct.price | number:'1.2-2'}}</h5>
+                  <p class="text-danger fw-bold">Discount: {{selectedProduct.discount || 0}}%</p>
+                  <span class="status-badge d-block my-2" style="width: 100%;"
+                        [ngClass]="{
+                      'available-badge': selectedProduct.status === 'Available',
+                      'outofstock-badge': selectedProduct.status === 'Out of Stock'
+                    }">
+                    {{selectedProduct.status}}
+                  </span>
+                </div>
+              </div>
+              <button class="btn btn-outline-primary btn-sm rounded-pill px-3" (click)="openAddVariationModal()">
+                <i class="bi bi-plus-circle me-1"></i> Add Variation
+              </button>
+            </div>
+            <div class="col-md-8">
+              <div class="card">
+                <div class="card-body">
+                  <h5 class="card-title fw-bold mb-4 text-center">Product Variations</h5>
+                  <div class="table-responsive">
+                    <table class="table table-hover">
+                      <thead>
+                      <tr class="text-center">
+                        <th>Color</th>
+                        <th>Size</th>
+                        <th>Quantity</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                      </tr>
+                      </thead>
+                      <tbody>
+                      <tr *ngFor="let variation of selectedProduct.variations; let i = index" class="text-center">
+                        <td>
+                          <div class="d-flex align-items-center justify-content-center">
+                            <div class="color-preview me-2" [ngStyle]="{ 'background-color': variation.color.toLowerCase() }"></div>
+                            <span>{{variation.color}}</span>
+                          </div>
+                        </td>
+                        <td class="fw-bold">{{variation.size}}</td>
+                        <td>
+                          <input type="number" class="form-control form-control-sm mx-auto" style="width: 80px;" [(ngModel)]="variation.quantity" min="0" (change)="updateVariationStatus(i)">
+                        </td>
+                        <td>
+                            <span class="status-badge" [ngClass]="{
+                              'available-badge': variation.quantity > 0,
+                              'outofstock-badge': variation.quantity <= 0
+                            }">
+                              {{ variation.quantity > 0 ? 'In Stock' : 'Out of Stock' }}
+                            </span>
+                        </td>
+                        <td>
+                          <button class="btn btn-sm btn-outline-danger rounded-pill px-3" (click)="removeVariation(i)">
+                            <i class="bi bi-trash me-1"></i>Delete
+                          </button>
+                        </td>
+                      </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="alert alert-info mt-3 mb-0 text-center">
+                    <i class="bi bi-info-circle me-2"></i>
+                    Total available quantity: {{ getTotalQuantity(selectedProduct) }} units across {{ selectedProduct.variations.length }} variations
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button class="btn btn-primary" (click)="saveInventoryChanges()">Save Changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Variation Modal -->
+  <div class="modal fade" id="addVariationModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 shadow">
+        <div class="modal-header bg-primary text-white">
+          <h5 class="modal-title">Add New Variation</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <form #variationForm="ngForm">
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Color</label>
+              <select class="form-select" [(ngModel)]="newVariation.color" name="color" required>
+                <option *ngFor="let color of colorOptions" [value]="color">{{color}}</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Size</label>
+              <select class="form-select" [(ngModel)]="newVariation.size" name="size" required>
+                <option *ngFor="let size of sizeOptions" [value]="size">{{size}}</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Quantity</label>
+              <input type="number" class="form-control" [(ngModel)]="newVariation.quantity" name="quantity" min="0" required>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button class="btn btn-primary" (click)="addVariation()" [disabled]="!variationForm.valid">Add Variation</button>
         </div>
       </div>
     </div>
