@@ -14,6 +14,9 @@ class Product extends Model
         'price',
         'image',
         'discount',
+        'size',
+        'color',
+        'status',
         'category_id'
     ];
 
