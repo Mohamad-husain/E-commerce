@@ -50,4 +50,30 @@ class AdminUserController extends Controller
             'new_role' => $user->role_id == 1 ? 'Admin' : 'customer'
         ]);
     }
+
+
+    public function filterUsers(Request $request)
+    {
+        $search = $request->query('search');
+
+        $users = User::select('id', 'name', 'email', 'created_at', 'role_id')
+            ->when($search, function ($query, $search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('name', 'like', '%' . $search . '%')
+                        ->orWhere('email', 'like', '%' . $search . '%');
+                });
+            })
+            ->get();
+
+        return response()->json($users->map(function ($user) {
+            return [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'registered' => $user->created_at->toDateString(),
+                'role' => $user->role_id == 1 ? 'Admin' : 'User',
+            ];
+        }));
+    }
+
 }

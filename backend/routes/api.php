@@ -58,20 +58,30 @@ Route::get('/admin/dashboard/orders-per-month', [DashboardController::class, 'ge
 Route::get('/admin/dashboard/order-status', [DashboardController::class, 'getOrderStatusBreakdown']);
 Route::get('/admin/dashboard/users-and-sales', [DashboardController::class, 'getNewUsersAndSales']);
 Route::get('/admin/dashboard/latest-orders', [DashboardController::class, 'latestOrders']);
+
+
 // Admin Product
 Route::get('/admin/allProduct', [AdminProductController::class, 'AllProduct']);
 Route::get('/admin/showDetails/{id}', [AdminProductController::class, 'showDetails']);
 Route::post('/admin/addProduct', [AdminProductController::class, 'AddProduct']);
 Route::put('/admin/updateProduct/{id}', [AdminProductController::class, 'UpdateProduct']);
 Route::delete('/admin/deleteProduct/{id}', [AdminProductController::class, 'DeleteProduct']);
+Route::put('/admin/updateProduct/{id}/variations', [AdminProductController::class, 'UpdateVariations']);
+Route::post('/admin/updateProduct/{id}/variation', [AdminProductController::class, 'AddVariation']);
+Route::delete('/admin/updateProduct/{variationId}/variation', [AdminProductController::class, 'DeleteVariation']);
+Route::get('/admin/filter-products', [AdminProductController::class, 'FilterProducts']);
+
+
 // Admin Order
 Route::get('/admin/allOrder', [AdminOrderController::class, 'AllOrder']);
 Route::get('/admin/detailsOrder/{id}', [AdminOrderController::class, 'DetailsOrder']);
 Route::put('/admin/orders/{id}/status', [AdminOrderController::class, 'UpdateStatus']);
 Route::delete('/admin/deleteOrders/{id}', [AdminOrderController::class, 'DeleteOrder']);
+Route::get('/admin/orders/filter', [AdminOrderController::class, 'OrderFilter']);
+
 // Admin Users
 Route::get('/admin/users', [AdminUserController::class, 'getAllUsers']);
 Route::delete('/admin/users/{id}', [AdminUserController::class, 'deleteUser']);
 Route::put('/admin/users/{id}/toggle-role', [AdminUserController::class, 'toggleRole']);
-
+Route::get('/admin/users/filter', [AdminUserController::class, 'filterUsers']);
 
