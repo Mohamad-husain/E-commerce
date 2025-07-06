@@ -11,6 +11,10 @@ use App\Http\Controllers\Product\ProductController;
 use App\Http\Controllers\Product\SpecialOfferController;
 use App\Http\Controllers\Product\WishlistController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ContactController;
+
+
 
 //Auth
 Route::post('/register', [UserController::class, 'register']);
@@ -85,3 +89,14 @@ Route::delete('/admin/users/{id}', [AdminUserController::class, 'deleteUser']);
 Route::put('/admin/users/{id}/toggle-role', [AdminUserController::class, 'toggleRole']);
 Route::get('/admin/users/filter', [AdminUserController::class, 'filterUsers']);
 
+
+//profile
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'show']);
+    Route::put('/profile', [ProfileController::class, 'update']);
+});
+
+
+//contact
+Route::post('/contact', [ContactController::class, 'store']);
+Route::get('/contact', [ContactController::class, 'index']);

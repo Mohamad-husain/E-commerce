@@ -20,6 +20,9 @@ export class ProductDetailComponent implements OnInit {
   selectedImage: string = '';
   selectedSize: string = '';
   selectedColor: any = '';
+selectedQuantity: number = 1;
+
+maxQuantity: number = 10;
 
   constructor(
     private route: ActivatedRoute,
@@ -72,21 +75,35 @@ export class ProductDetailComponent implements OnInit {
     return { name, value: hex };
   }
 
-  addToCart() {
-    if (!this.selectedSize || !this.selectedColor) {
-      this.notificationService.show('⚠️ Please select size and color first!');
-      return;
-    }
-
-    this.cartService.addToCart({
-      name: this.product.name,
-      price: this.product.price,
-      size: this.selectedSize,
-      color: this.selectedColor.name,
-      quantity: 1,
-      image: this.product.images[0]
-    });
-
-    this.notificationService.show(`🛒 ${this.product.name} added to cart!`);
+increaseQuantity() {
+  if (this.selectedQuantity < this.maxQuantity) {
+    this.selectedQuantity++;
   }
+}
+
+decreaseQuantity() {
+  if (this.selectedQuantity > 1) {
+    this.selectedQuantity--;
+  }
+}
+
+ addToCart() {
+  if (!this.selectedSize || !this.selectedColor || !this.selectedQuantity) {
+    this.notificationService.show('⚠️ Please select size, color, and quantity first!');
+    return;
+  }
+
+  this.cartService.addToCart({
+    name: this.product.name,
+    price: this.product.price,
+    size: this.selectedSize,
+    color: this.selectedColor.name,
+    quantity: this.selectedQuantity,
+    image: this.product.images[0]
+  });
+
+  this.notificationService.show(`🛒 ${this.product.name} added to cart!`);
+}
+
+
 }

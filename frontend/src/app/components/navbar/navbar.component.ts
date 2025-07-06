@@ -25,7 +25,7 @@ export class NavbarComponent implements OnInit {
 
   ];
 
-  isLoggedIn = false;
+  isLoggedIn = true;
   userName = 'Mohammad';
 
   ngOnInit(): void {

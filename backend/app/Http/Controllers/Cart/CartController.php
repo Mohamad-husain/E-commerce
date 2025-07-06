@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 
 class CartController extends Controller
 {
-    // 1. عرض السلة للمستخدم الحالي
+
     public function index()
     {
         $items = CartItem::with('product')->where('user_id', Auth::id())->get();

@@ -17,3 +17,31 @@
 .border-dark {
   border: 2px solid #000 !important;
 }
+.quantity-btn {
+  background-color: #f8f9fa;
+  border: 1px solid #ced4da;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  font-size: 24px;
+  font-weight: bold;
+  color: #212529;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  user-select: none;
+}
+
+.quantity-btn:hover {
+  background-color: #e9ecef;
+  transform: scale(1.05);
+}
+
+.quantity-display {
+  font-size: 24px;
+  font-weight: 600;
+  min-width: 40px;
+  text-align: center;
+}
