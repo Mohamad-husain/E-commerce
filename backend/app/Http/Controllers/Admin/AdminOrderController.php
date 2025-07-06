@@ -83,4 +83,33 @@ class AdminOrderController extends Controller
             'message' => 'Order deleted successfully',
         ]);
     }
+
+
+    public function OrderFilter(Request $request)
+    {
+        $search = $request->query('search');
+
+        $orders = Order::with(['user', 'items'])
+            ->when($search, function ($query, $search) {
+                $query->where('id', $search)
+                    ->orWhereHas('user', function ($q) use ($search) {
+                        $q->where('name', 'like', '%' . $search . '%');
+                    });
+            })
+            ->latest()
+            ->get();
+
+        $data = $orders->map(function ($order) {
+            return [
+                'id' => $order->id,
+                'customer' => $order->user ? $order->user->name : 'Unknown',
+                'date' => $order->created_at->toDateString(),
+                'total' => $order->total_price,
+                'status' => $order->status,
+            ];
+        });
+
+        return response()->json($data);
+    }
+
 }

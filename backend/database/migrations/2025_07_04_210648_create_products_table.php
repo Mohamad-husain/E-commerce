@@ -12,10 +12,6 @@ return new class extends Migration {
             $table->decimal('price', 10, 2);
             $table->string('image')->nullable();
             $table->decimal('discount', 5, 2)->default(0);
-
-
-            $table->string('size')->nullable();
-            $table->string('color')->nullable();
             $table->string('status')->default('Available');
 
 
