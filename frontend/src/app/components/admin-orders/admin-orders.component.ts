@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import AOS from 'aos';
+import { NotificationService } from '../../services/notification/notification.service';
+import { AdminOrderService } from '../../services/order/admin-order.service';
 
 declare var bootstrap: any;
 
@@ -18,64 +20,49 @@ export class AdminOrdersComponent implements OnInit {
   selectedStatus: string = '';
   selectedOrder: any = null;
   orderToDelete: any = null;
+  orders: any[] = [];
+
   detailsModal: any;
   deleteModal: any;
 
-  orders = [
-    {
-      id: 1001,
-      customer: 'Ahmad Khaled',
-      date: '2025-07-01',
-      total: 75.55,
-      status: 'Pending',
-      items: [
-        { name: 'Classic T-Shirt', quantity: 2, price: 25.99, size: 'M', color: 'Black' },
-        { name: 'Leather Jacket', quantity: 1, price: 68.52, size: 'L', color: 'Brown' }
-      ]
-    },
-    {
-      id: 1002,
-      customer: 'Sara Ahmad',
-      date: '2025-07-22',
-      total: 89.99,
-      status: 'Delivered',
-      items: [
-        { name: 'Running Shoes', quantity: 1, price: 59.99, size: '42', color: 'White' },
-        { name: 'Cap', quantity: 1, price: 30.0, size: 'One Size', color: 'Red' }
-      ]
-    },
-    {
-      id: 1003,
-      customer: 'Mohammad Ahmad',
-      date: '2025-06-01',
-      total: 45.0,
-      status: 'Shipped',
-      items: [
-        { name: 'White Shirt', quantity: 3, price: 15.0, size: 'L', color: 'White' }
-      ]
-    }
-  ];
+  constructor(
+    private orderService: AdminOrderService,
+    private notificationService: NotificationService
+  ) {}
 
   ngOnInit(): void {
     AOS.init({ duration: 600, once: true });
+    this.fetchOrders();
   }
 
-  get filteredOrders() {
-    const term = this.searchTerm.toLowerCase();
-    return this.orders.filter(order =>
-      (order.customer.toLowerCase().includes(term) || order.id.toString().includes(term)) &&
-      (this.selectedStatus ? order.status === this.selectedStatus : true)
-    );
+  fetchOrders() {
+    this.orderService
+      .filterOrders(this.searchTerm.trim(), this.selectedStatus)
+      .subscribe(data => {
+        this.orders = data;
+      });
+  }
+
+  onSearchChange() {
+    this.fetchOrders();
+  }
+
+  onStatusChange() {
+    this.fetchOrders();
   }
 
   openDetailsModal(order: any): void {
-    this.selectedOrder = order;
-    this.detailsModal = new bootstrap.Modal(document.getElementById('detailsModal'));
-    this.detailsModal.show();
+    this.orderService.getOrderDetails(order.id).subscribe(data => {
+      this.selectedOrder = data;
+      this.detailsModal = new bootstrap.Modal(document.getElementById('detailsModal'));
+      this.detailsModal.show();
+    });
   }
 
   updateOrderStatus(order: any): void {
-    console.log('Order status updated:', order.id, order.status);
+    this.orderService.updateStatus(order.id, order.status).subscribe(() => {
+      this.notificationService.show(`Order #${order.id} status updated.`);
+    });
   }
 
   confirmDelete(order: any): void {
@@ -85,9 +72,10 @@ export class AdminOrdersComponent implements OnInit {
   }
 
   deleteOrder(): void {
-    if (this.orderToDelete) {
-      this.orders = this.orders.filter(o => o.id !== this.orderToDelete.id);
+    this.orderService.deleteOrder(this.orderToDelete.id).subscribe(() => {
+      this.notificationService.show(`Order #${this.orderToDelete.id} deleted.`);
+      this.fetchOrders();
       this.deleteModal.hide();
-    }
+    });
   }
 }

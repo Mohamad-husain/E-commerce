@@ -88,13 +88,17 @@ class AdminOrderController extends Controller
     public function OrderFilter(Request $request)
     {
         $search = $request->query('search');
+        $status = $request->query('status');
 
-        $orders = Order::with(['user', 'items'])
+        $orders = Order::with(['user', 'items.product'])
             ->when($search, function ($query, $search) {
                 $query->where('id', $search)
                     ->orWhereHas('user', function ($q) use ($search) {
                         $q->where('name', 'like', '%' . $search . '%');
                     });
+            })
+            ->when($status, function ($query, $status) {
+                $query->where('status', $status);
             })
             ->latest()
             ->get();
@@ -106,10 +110,20 @@ class AdminOrderController extends Controller
                 'date' => $order->created_at->toDateString(),
                 'total' => $order->total_price,
                 'status' => $order->status,
+                'items' => $order->items->map(function ($item) {
+                    return [
+                        'name' => $item->product->name ?? 'Unknown Product',
+                        'quantity' => $item->quantity,
+                        'price' => $item->price,
+                        'size' => $item->size,
+                        'color' => $item->color,
+                    ];
+                }),
             ];
         });
 
         return response()->json($data);
     }
+
 
 }
