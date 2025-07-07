@@ -22,13 +22,26 @@ export class WishlistComponent implements OnInit {
 
   ngOnInit(): void {
     AOS.init({ duration: 800, once: true });
-    this.wishlist = this.wishlistService.getWishlist();
+    this.loadWishlist();
   }
 
-  removeItem(id: number) {
-    const removed = this.wishlist.find(p => p.id === id);
-    this.wishlistService.removeFromWishlist(id);
-    this.wishlist = this.wishlistService.getWishlist();
-    this.notificationService.show(`❌ Removed ${removed?.name} from wishlist`);
+  loadWishlist() {
+    this.wishlistService.getWishlistFromAPI().subscribe(
+      data => {
+        this.wishlist = data.map((item: any) => item.product);
+        this.wishlistService.setWishlist(this.wishlist);
+      },
+      error => {
+        console.error('Failed to load wishlist:', error);
+      }
+    );
+  }
+
+  removeItem(productId: number) {
+    const removed = this.wishlist.find(p => p.id === productId);
+    this.wishlistService.removeFromWishlist(productId).subscribe(() => {
+      this.wishlist = this.wishlist.filter(p => p.id !== productId);
+      this.notificationService.show(`❌ Removed ${removed?.name} from wishlist`);
+    });
   }
 }

@@ -20,9 +20,8 @@ export class ProductDetailComponent implements OnInit {
   selectedImage: string = '';
   selectedSize: string = '';
   selectedColor: any = '';
-selectedQuantity: number = 1;
-
-maxQuantity: number = 10;
+  selectedQuantity: number = 1;
+  maxQuantity: number = 10;
 
   constructor(
     private route: ActivatedRoute,
@@ -33,77 +32,64 @@ maxQuantity: number = 10;
   ) {}
 
   ngOnInit(): void {
-    // Initialize AOS animations
-    AOS.init({
-      duration: 800,
-      easing: 'ease-in-out',
-      once: true
-    });
+    AOS.init({ duration: 800, easing: 'ease-in-out', once: true });
 
     const id = Number(this.route.snapshot.paramMap.get('id'));
-    this.product = this.productService.getProductById(id);
+    this.productService.getProductById(id).subscribe((data) => {
+      this.product = data;
+      this.titleService.setTitle(`${data.name} - Product Details`);
+      this.selectedImage = data.images[0];
 
-    if (this.product) {
-      this.selectedImage = this.product.images[0];
-      this.titleService.setTitle(this.product.name + ' - Product Details');
-
-      this.product.colors = this.product.colors.map((c: any) =>
+      // تحويل الألوان إلى objects
+      this.product.colors = this.product.colors.map((c: string) =>
         typeof c === 'string' ? this.mapColor(c) : c
       );
+    });
+  }
+
+  mapColor(colorName: string) {
+    const map: any = {
+      Red: '#FF0000',
+      Blue: '#0000FF',
+      Black: '#000000',
+      White: '#FFFFFF',
+      Green: '#00FF00',
+      Yellow: '#FFFF00',
+    };
+
+    return {
+      name: colorName,
+      value: map[colorName] || colorName
+    };
+  }
+
+  increaseQuantity() {
+    if (this.selectedQuantity < this.maxQuantity) {
+      this.selectedQuantity++;
     }
   }
 
-  mapColor(hex: string) {
-    const colorMap: any = {
-      '#000': 'Black',
-      '#FFF': 'White',
-      '#FFFFFF': 'White',
-      '#FF0000': 'Red',
-      '#00FF00': 'Green',
-      '#0000FF': 'Blue',
-      '#8B0000': 'Dark Red',
-      '#FFFF00': 'Yellow',
-      '#87CEEB': 'Sky Blue',
-      '#000000': 'Black',
-      '#333333': 'Dark Gray',
-      '#00CED1': 'Dark Turquoise',
-      '#F5F5DC': 'Beige',
-      '#0000CD': 'Medium Blue'
-    };
-
-    const name = colorMap[hex.toUpperCase()] || hex.toUpperCase();
-    return { name, value: hex };
+  decreaseQuantity() {
+    if (this.selectedQuantity > 1) {
+      this.selectedQuantity--;
+    }
   }
 
-increaseQuantity() {
-  if (this.selectedQuantity < this.maxQuantity) {
-    this.selectedQuantity++;
+  addToCart() {
+    if (!this.selectedSize || !this.selectedColor || !this.selectedQuantity) {
+      this.notificationService.show('⚠️ Please select size, color, and quantity first!');
+      return;
+    }
+
+    this.cartService.addToCart({
+      name: this.product.name,
+      price: this.product.price,
+      size: this.selectedSize,
+      color: this.selectedColor.name,
+      quantity: this.selectedQuantity,
+      image: this.selectedImage
+    });
+
+    this.notificationService.show(`🛒 ${this.product.name} added to cart!`);
   }
-}
-
-decreaseQuantity() {
-  if (this.selectedQuantity > 1) {
-    this.selectedQuantity--;
-  }
-}
-
- addToCart() {
-  if (!this.selectedSize || !this.selectedColor || !this.selectedQuantity) {
-    this.notificationService.show('⚠️ Please select size, color, and quantity first!');
-    return;
-  }
-
-  this.cartService.addToCart({
-    name: this.product.name,
-    price: this.product.price,
-    size: this.selectedSize,
-    color: this.selectedColor.name,
-    quantity: this.selectedQuantity,
-    image: this.product.images[0]
-  });
-
-  this.notificationService.show(`🛒 ${this.product.name} added to cart!`);
-}
-
-
 }
