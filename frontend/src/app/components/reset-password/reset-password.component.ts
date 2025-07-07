@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
+import { AuthService } from '../../services/auth/auth.service';
 
 @Component({
   selector: 'app-reset-password',
@@ -12,6 +13,10 @@ import { RouterLink } from '@angular/router';
 })
 export class ResetPasswordComponent {
   codeDigits: string[] = ['', '', '', '', '', ''];
+  message: string = '';
+  error: string = '';
+
+  constructor(private authService: AuthService, private router: Router) {}
 
   trackByIndex(index: number): number {
     return index;
@@ -31,4 +36,33 @@ export class ResetPasswordComponent {
       if (nextInput) nextInput.focus();
     }
   }
+
+  verifyCode() {
+  const code = this.codeDigits.join('');
+  const email = localStorage.getItem('resetEmail');
+
+  if (!email || code.length !== 6) {
+    this.error = 'Please enter the full code.';
+    return;
+  }
+
+  const data = { email, code };
+
+  this.authService.verifyResetCode(data).subscribe({
+    next: (res) => {
+      this.message = 'Code verified. Redirecting...';
+
+      // ✅ احفظ reset_token في التخزين المحلي
+      localStorage.setItem('resetToken', res.reset_token);
+
+      setTimeout(() => {
+        this.router.navigate(['/change-password']);
+      }, 1000);
+    },
+    error: (err) => {
+      this.error = err.error?.message || 'Verification failed.';
+    }
+  });
+}
+
 }

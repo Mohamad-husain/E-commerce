@@ -6,6 +6,9 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class AuthService {
+  getResetEmail(email: string) {
+    throw new Error('Method not implemented.');
+  }
 
   private apiUrl = 'http://127.0.0.1:8000/api';
 
