@@ -12,7 +12,7 @@
         <label class="form-label fw-bold">Category</label>
         <select class="form-select" [(ngModel)]="selectedCategory" (change)="onSearchChange()">
           <option value="">All</option>
-          <option *ngFor="let cat of categories" [value]="cat">{{ cat }}</option>
+          <option *ngFor="let cat of categories" [value]="cat.id">{{ cat.name }}</option>
         </select>
       </div>
 
@@ -32,7 +32,6 @@
           </div>
         </div>
       </div>
-
 
       <div class="mb-3">
         <label class="form-label fw-bold">Color</label>
@@ -58,8 +57,15 @@
 
               <div class="d-flex align-items-center justify-content-between gap-2">
                 <button class="custom-btn btn wishlist-btn" (click)="toggleWishlist(product)">
-                  <i class="bi" [ngClass]="isInWishlist(product.id) ? 'bi-heart-fill' : 'bi-heart'"></i>
+                  <i class="bi"
+                     [ngClass]="{
+       'bi-heart-fill text-danger': isInWishlist(product.id),
+       'bi-heart': !isInWishlist(product.id)
+     }">
+                  </i>
                 </button>
+
+
                 <a class="custom-btn btn btn-dark w-100" [routerLink]="['/product', product.id]">View Details</a>
               </div>
             </div>

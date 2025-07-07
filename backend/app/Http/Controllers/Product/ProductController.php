@@ -6,22 +6,35 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use App\Models\ProductVariation;
 
 class ProductController extends Controller
 {
-    //
-    public function getAllProducts()
-{
+    public function getAllProducts() {
     $products = Product::with('category')->get();
     return response()->json($products);
 }
-public function getProductDetails($id)
-{
-    $product = Product::with('category')->findOrFail($id);
-    return response()->json($product);
-}
-public function filterProducts(Request $request)
-{
+
+    public function getProductDetails($id)
+    {
+        $product = Product::with(['category', 'variations'])->findOrFail($id);
+
+        $sizes = $product->variations->pluck('size')->unique()->values();
+        $colors = $product->variations->pluck('color')->unique()->values();
+        $images = [$product->image];
+        return response()->json([
+            'id' => $product->id,
+            'name' => $product->name,
+            'price' => $product->price,
+            'description' => $product->description,
+            'category' => $product->category,
+            'sizes' => $sizes,
+            'colors' => $colors,
+            'images' => $images,
+        ]);
+    }
+
+    public function filterProducts(Request $request) {
     $query = Product::with('category');
 
     if ($request->has('name')) {
@@ -42,17 +55,15 @@ public function filterProducts(Request $request)
 
     return response()->json($query->get());
 }
-public function getAllCategories()
-{
+
+    public function getAllCategories() {
     $categories = Category::all();
     return response()->json($categories);
 }
-public function getProductsByCategory($categoryId)
-{
+
+    public function getProductsByCategory($categoryId) {
     $products = Product::where('category_id', $categoryId)->get();
     return response()->json($products);
 }
-
-
 
 }

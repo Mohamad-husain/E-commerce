@@ -23,6 +23,7 @@ Route::post('/forgot-password', [UserController::class, 'sendResetCode']);
 Route::post('/send-reset-code', [UserController::class, 'sendResetCode']);
 Route::post('/verify-reset-code', [UserController::class, 'verifyResetCode']);
 Route::post('/change-password', [UserController::class, 'changePassword']);
+Route::middleware('auth:sanctum')->post('/logout', [UserController::class, 'logout']);
 
 
 //product
@@ -31,14 +32,17 @@ Route::get('/products/{id}', [ProductController::class, 'getProductDetails']);
 Route::get('/filter-products', [ProductController::class, 'filterProducts']);
 Route::get('/categories', [ProductController::class, 'getAllCategories']);
 Route::get('/categories/{id}/products', [ProductController::class, 'getProductsByCategory']);
-Route::middleware('auth:sanctum')->post('/logout', [UserController::class, 'logout']);
+
+
+
+
 
 //favorites
-Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/wishlist', [WishlistController::class, 'index']);
-    Route::post('/wishlist', [WishlistController::class, 'store']);
-    Route::delete('/wishlist/{product_id}', [WishlistController::class, 'destroy']);
-});
+//Route::middleware('auth:sanctum')->group(function () {
+Route::get('/wishlist', [WishlistController::class, 'index']);
+Route::post('/wishlist', [WishlistController::class, 'store']);
+Route::delete('/wishlist/{product_id}', [WishlistController::class, 'destroy']);
+//});
 
 //add to cart
 Route::middleware('auth:sanctum')->group(function () {
