@@ -2,7 +2,7 @@
 
   <!-- الصورة -->
   <div class="login-image d-none d-md-flex align-items-center justify-content-center">
-    <img src="assets/images/trendella_login_left_side.png" alt="Login Illustration" class="img-fluid" style="max-width: 450px;">
+    <img src="../../../assets/images/trendella_login_left_side.png" alt="Login Illustration" class="img-fluid" style="max-width: 450px;">
   </div>
 
   <!-- النموذج -->
@@ -12,28 +12,22 @@
         Welcome Back <span style="color: #ef4e6b;">Trendella</span>
       </h2>
 
-      <form>
-        <div class="mb-4">
-          <label for="email" class="form-label fw-semibold text-secondary">Email</label>
-          <input type="email" id="email" class="form-control login-input form-control-lg rounded-3" placeholder="Enter your email">
-        </div>
+     <form [formGroup]="loginForm" (ngSubmit)="login()">
+  <div class="mb-4">
+    <label for="email" class="form-label fw-semibold text-secondary">Email</label>
+    <input type="email" id="email" formControlName="email" class="form-control login-input form-control-lg rounded-3" placeholder="Enter your email">
+  </div>
 
-        <div class="mb-4">
-          <label for="password" class="form-label fw-semibold text-secondary">Password</label>
-          <input type="password" id="password" class="form-control login-input form-control-lg rounded-3" placeholder="Enter your password">
-        </div>
+  <div class="mb-4">
+    <label for="password" class="form-label fw-semibold text-secondary">Password</label>
+    <input type="password" id="password" formControlName="password" class="form-control login-input form-control-lg rounded-3" placeholder="Enter your password">
+  </div>
 
-        <!-- زر تسجيل الدخول -->
-        <button type="button" class="btn w-100 rounded-3 shadow-sm mb-3 text-white btn-lg" style="background-color: #ef4e6b;" (click)="login()">
-          Login
-        </button>
-
-        <!-- زر Google -->
-        <button type="button" class="btn btn-outline-secondary w-100 d-flex align-items-center justify-content-center gap-2 rounded-3 shadow-sm google-btn">
-          <img src="assets/images/google-icon.jpg" alt="Google" width="22" height="22" class="rounded-circle">
-          <span class="fw-semibold">Sign in with Google</span>
-        </button>
-      </form>
+  <!-- زر تسجيل الدخول -->
+  <button type="submit" class="btn w-100 rounded-3 shadow-sm mb-3 text-white btn-lg" style="background-color: #ef4e6b;">
+    Login
+  </button>
+</form>
 
       <!-- نسيت كلمة السر -->
       <div class="text-center mt-3">

@@ -21,3 +21,24 @@
 .btn-outline-danger {
   width: 100px;
 }
+
+.btn-clear-cart {
+  border: 2px solid #dc3545;
+  color: #dc3545;
+  background-color: #fff;
+  border-radius: 12px;
+  font-weight: 600;
+  padding: 10px 20px;
+  transition: all 0.3s ease;
+}
+
+.btn-clear-cart:hover {
+  background-color: #dc3545;
+  color: #fff;
+  transform: scale(1.05);
+}
+
+.btn-clear-cart i {
+  font-size: 1.2rem;
+  vertical-align: middle;
+}

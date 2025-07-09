@@ -13,13 +13,12 @@
     <div class="logout-wrapper mt-4">
       <a class="Btn" routerLink="/">
         <div class="sign">
-          <svg viewBox="0 0 512 512">
-            <path d="M377.9 105.9L500.7 228.7c7.2 7.2 11.3 17.1 11.3 27.3s-4.1 20.1-11.3 27.3L377.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9l0-62.1-128 0c-17.7 0-32-14.3-32-32l0-64c0-17.7 14.3-32 32-32l128 0 0-62.1c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.6 24 9.9zM160 96L96 96c-17.7 0-32 14.3-32 32l0 256c0 17.7 14.3 32 32 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-64 0c-53 0-96-43-96-96L0 128C0 75 43 32 96 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32z"></path>
-          </svg>
+          <i class="bi bi-box-arrow-right fs-5 text-white"></i>
         </div>
         <div class="text">Logout</div>
       </a>
     </div>
+
   </div>
 
   <div class="main-content flex-grow-1 p-4">
@@ -47,13 +46,14 @@
       <div class="col-md-6 mb-4" data-aos="fade-up" data-aos-delay="100">
         <div class="card chart-card shadow-sm">
           <div class="card-body">
-            <h6 class="fw-semibold mb-3">Orders Per Month</h6>
+            <h6 class="fw-semibold mb-3">Orders</h6>
             <div class="chart-container">
               <canvas baseChart [data]="barChartData" [options]="barChartOptions" [type]="barChartType"></canvas>
             </div>
           </div>
         </div>
       </div>
+
       <div class="col-md-6 mb-4" data-aos="fade-up" data-aos-delay="200">
         <div class="card chart-card shadow-sm">
           <div class="card-body">
@@ -96,11 +96,13 @@
               <div class="status-wrapper">
                   <span class="badge"
                         [ngClass]="{
-                      'bg-success': order.status === 'Completed',
-                      'bg-warning': order.status === 'Pending',
-                      'bg-danger': order.status === 'Cancelled'
-                    }">
-                    {{ order.status }}
+                           'bg-warning': order.status === 'Pending',
+                            'bg-primary': order.status === 'Processing',
+                             'bg-info': order.status === 'Shipped',
+                              'bg-success': order.status === 'Delivered',
+                              'bg-danger': order.status === 'Cancelled'
+                        }">
+                         {{ order.status }}
                   </span>
               </div>
             </td>

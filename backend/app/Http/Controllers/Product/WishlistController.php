@@ -1,21 +1,19 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Product;
 
+use App\Http\Controllers\Controller;
 use App\Models\WishlistItem;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class WishlistController extends Controller
 {
-    // ✅ عرض كل المنتجات المفضلة للمستخدم الحالي
     public function index()
     {
-        $wishlist = WishlistItem::with('product')->where('user_id', Auth::id())->get();
+        $wishlist = WishlistItem::with('product')->get();
         return response()->json($wishlist);
     }
 
-    // ✅ إضافة منتج إلى المفضلة
     public function store(Request $request)
     {
         $request->validate([
@@ -23,19 +21,18 @@ class WishlistController extends Controller
         ]);
 
         $item = WishlistItem::firstOrCreate([
-            'user_id' => Auth::id(),
+            'user_id' => 1,
             'product_id' => $request->product_id
         ]);
 
         return response()->json(['message' => 'Product added to wishlist', 'data' => $item], 201);
     }
 
-    // ✅ حذف منتج من المفضلة
     public function destroy($id)
     {
-        $item = WishlistItem::where('user_id', Auth::id())
-                            ->where('product_id', $id)
-                            ->first();
+        $item = WishlistItem::where('user_id', 1)
+        ->where('product_id', $id)
+            ->first();
 
         if (!$item) {
             return response()->json(['message' => 'Item not found in wishlist'], 404);

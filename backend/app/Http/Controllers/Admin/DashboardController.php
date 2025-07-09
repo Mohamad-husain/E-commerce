@@ -8,6 +8,7 @@ use App\Models\Product;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Carbon;
 
 class DashboardController extends Controller
 {
@@ -20,48 +21,113 @@ class DashboardController extends Controller
         ]);
     }
 
-    public function getOrdersPerMonth()
+    public function getOrdersPerMonth(Request $request)
     {
-        $orders = Order::selectRaw('MONTH(created_at) as month, COUNT(*) as count')
-            ->groupBy('month')
-            ->orderBy('month')
+        $range = $request->query('range', 'Last Month');
+        $query = Order::query();
+
+        switch ($range) {
+            case 'Today':
+                $query->whereDate('created_at', Carbon::today());
+                $groupFormat = '%Y-%m-%d';
+                break;
+
+            case 'Last Week':
+                $query->whereBetween('created_at', [
+                    Carbon::now()->subWeek()->startOfWeek(),
+                    Carbon::now()->subWeek()->endOfWeek()
+                ]);
+                $groupFormat = '%Y-%m-%d';
+                break;
+
+            case 'Last Month':
+            default:
+                $query->whereMonth('created_at', now()->subMonth()->month)
+                    ->whereYear('created_at', now()->subMonth()->year);
+                $groupFormat = '%Y-%m-%d';
+                break;
+        }
+
+        $orders = $query->selectRaw("DATE_FORMAT(created_at, '{$groupFormat}') as label, status, COUNT(*) as count")
+            ->groupBy('label', 'status')
+            ->orderBy('label')
             ->get();
+
         return response()->json($orders);
     }
 
-    public function getOrderStatusBreakdown()
+    public function getOrderStatusBreakdown(Request $request)
     {
-        $statusCounts = Order::selectRaw('status, COUNT(*) as count')
+        $range = $request->query('range', 'Last Month');
+        $query = Order::query();
+
+        switch ($range) {
+            case 'Today':
+                $query->whereDate('created_at', Carbon::today());
+                break;
+            case 'Last Week':
+                $query->whereBetween('created_at', [
+                    Carbon::now()->subWeek()->startOfWeek(),
+                    Carbon::now()->subWeek()->endOfWeek()
+                ]);
+                break;
+            case 'Last Month':
+            default:
+                $query->whereMonth('created_at', now()->subMonth()->month)
+                    ->whereYear('created_at', now()->subMonth()->year);
+                break;
+        }
+        $statusCounts = $query->selectRaw('status, COUNT(*) as count')
             ->groupBy('status')
             ->get();
-
         return response()->json($statusCounts);
     }
 
-    public function getNewUsersAndSales()
+    public function getNewUsersAndSales(Request $request)
     {
+        $range = $request->query('range', 'Last Month');
         $data = [];
+        switch ($range) {
+            case 'Today':
+                $label = now()->format('M d');
+                $userCount = DB::table('users')->whereDate('created_at', now())->count();
+                $salesSum = DB::table('orders')
+                    ->where('status', 'Completed')
+                    ->whereDate('created_at', now())
+                    ->sum('total_price');
+                $data[] = ['label' => $label, 'new_users' => $userCount, 'sales' => $salesSum];
+                break;
 
-        for ($i = 3; $i >= 0; $i--) {
-            $month = now()->subMonths($i)->format('Y-m');
-            $label = now()->subMonths($i)->format('M');
+            case 'Last Week':
+                for ($i = 6; $i >= 0; $i--) {
+                    $date = now()->subDays($i);
+                    $label = $date->format('D');
+                    $userCount = DB::table('users')->whereDate('created_at', $date)->count();
+                    $salesSum = DB::table('orders')
+                        ->where('status', 'Completed')
+                        ->whereDate('created_at', $date)
+                        ->sum('total_price');
+                    $data[] = ['label' => $label, 'new_users' => $userCount, 'sales' => $salesSum];
+                }
+                break;
 
-            $userCount = DB::table('users')
-                ->whereYear('created_at', now()->subMonths($i)->year)
-                ->whereMonth('created_at', now()->subMonths($i)->month)
-                ->count();
-
-            $salesSum = DB::table('orders')
-                ->where('status', 'Completed')
-                ->whereYear('created_at', now()->subMonths($i)->year)
-                ->whereMonth('created_at', now()->subMonths($i)->month)
-                ->sum('total_price');
-
-            $data[] = [
-                'month' => $label,
-                'new_users' => $userCount,
-                'sales' => $salesSum,
-            ];
+            case 'Last Month':
+            default:
+                for ($i = 3; $i >= 0; $i--) {
+                    $month = now()->subMonths($i);
+                    $label = $month->format('M');
+                    $userCount = DB::table('users')
+                        ->whereYear('created_at', $month->year)
+                        ->whereMonth('created_at', $month->month)
+                        ->count();
+                    $salesSum = DB::table('orders')
+                        ->where('status', 'Completed')
+                        ->whereYear('created_at', $month->year)
+                        ->whereMonth('created_at', $month->month)
+                        ->sum('total_price');
+                    $data[] = ['label' => $label, 'new_users' => $userCount, 'sales' => $salesSum];
+                }
+                break;
         }
 
         return response()->json($data);

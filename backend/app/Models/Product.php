@@ -14,8 +14,6 @@ class Product extends Model
         'price',
         'image',
         'discount',
-        'size',
-        'color',
         'status',
         'category_id'
     ];
@@ -38,5 +36,10 @@ class Product extends Model
     public function wishlistItems()
     {
         return $this->hasMany(WishlistItem::class);
+    }
+
+    public function variations()
+    {
+        return $this->hasMany(ProductVariation::class);
     }
 }

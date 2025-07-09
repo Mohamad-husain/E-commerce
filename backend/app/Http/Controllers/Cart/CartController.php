@@ -1,14 +1,15 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Cart;
 
+use App\Http\Controllers\Controller;
 use App\Models\CartItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class CartController extends Controller
 {
-    // 1. عرض السلة للمستخدم الحالي
+
     public function index()
     {
         $items = CartItem::with('product')->where('user_id', Auth::id())->get();

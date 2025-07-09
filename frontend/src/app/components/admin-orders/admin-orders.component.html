@@ -15,12 +15,18 @@
         <span class="input-group-text bg-white border-end-0">
           <i class="icon bi bi-search text-muted"></i>
         </span>
-        <input type="text" class="form-control border-start-0" [(ngModel)]="searchTerm" placeholder="Search by customer or order ID..." />
+        <input
+          type="text"
+          class="form-control border-start-0"
+          [(ngModel)]="searchTerm"
+          (input)="onSearchChange()"
+          placeholder="Search by customer or order ID..."
+        />
       </div>
     </div>
 
     <div class="col-12 col-md-4">
-      <select class="form-select shadow-sm" [(ngModel)]="selectedStatus">
+      <select class="form-select shadow-sm" [(ngModel)]="selectedStatus" (change)="onStatusChange()">
         <option value="">All Statuses</option>
         <option>Pending</option>
         <option>Processing</option>
@@ -31,7 +37,7 @@
     </div>
   </div>
 
-  <p class="text-muted small mb-2" data-aos="fade-in">Showing {{ filteredOrders.length }} order(s)</p>
+  <p class="text-muted small mb-2" data-aos="fade-in">Showing {{ orders.length }} order(s)</p>
 
   <div class="card shadow-sm border-0">
     <div class="card-body p-0">
@@ -48,7 +54,7 @@
           </tr>
           </thead>
           <tbody data-aos="fade-up">
-          <tr *ngFor="let order of filteredOrders">
+          <tr *ngFor="let order of orders">
             <td class="fw-bold">#{{ order.id }}</td>
             <td class="fw-semibold text-dark">{{ order.customer }}</td>
             <td>{{ order.date }}</td>
@@ -77,6 +83,7 @@
     </div>
   </div>
 
+  <!-- Details Modal -->
   <div class="modal fade" id="detailsModal" tabindex="-1">
     <div class="modal-dialog modal-lg modal-dialog-centered">
       <div class="modal-content border-0 shadow-lg rounded-4">
@@ -97,7 +104,13 @@
           <h6 class="mb-2">Items:</h6>
           <ul class="list-group list-group-flush">
             <li class="list-group-item" *ngFor="let item of selectedOrder?.items">
-              {{ item.name }} - Qty: {{ item.quantity }} - ${{ item.price }}
+              <div class="fw-semibold">{{ item.name }}</div>
+              <small class="text-muted">
+                Qty: {{ item.quantity }} |
+                Price: ${{ item.price }} |
+                Size: {{ item.size || 'N/A' }} |
+                Color: {{ item.color || 'N/A' }}
+              </small>
             </li>
           </ul>
         </div>
@@ -108,7 +121,7 @@
     </div>
   </div>
 
-  <!-- 🔸 Modal: Delete -->
+  <!-- Delete Modal -->
   <div class="modal fade" id="deleteModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content border-0 shadow-lg rounded-4">

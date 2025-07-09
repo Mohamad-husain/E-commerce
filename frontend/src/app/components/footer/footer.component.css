@@ -29,8 +29,15 @@
 .social-icons {
   display: flex;
   gap: 15px;
-  margin-left: 440px;
+  justify-content: flex-start;
 }
+
+@media (min-width: 768px) {
+  .social-icons {
+    justify-content: flex-end;
+  }
+}
+
 
 .footer-icon {
   text-decoration: none;

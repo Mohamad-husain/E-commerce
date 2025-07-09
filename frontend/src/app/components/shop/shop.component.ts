@@ -11,17 +11,17 @@ import { Title } from '@angular/platform-browser';
 @Component({
   selector: 'app-shop',
   standalone: true,
+  imports: [CommonModule, CurrencyPipe, FormsModule, RouterLink],
   templateUrl: './shop.component.html',
   styleUrls: ['./shop.component.css'],
-  imports: [CommonModule, CurrencyPipe, FormsModule, RouterLink]
 })
 export class ShopComponent implements OnInit, AfterViewInit {
   products: any[] = [];
-  categories = ['Women', 'Men', 'Accessories', 'Deals', 'New'];
+  categories: any[] = [];
   sizes = ['S', 'M', 'L', 'XL', 'One Size'];
   colors = ['Red', 'Blue', 'Black', 'Brown'];
 
-  selectedCategory = '';
+  selectedCategory: number | '' = '';
   selectedSizes: string[] = [];
   selectedColor = '';
   searchQuery = '';
@@ -30,6 +30,8 @@ export class ShopComponent implements OnInit, AfterViewInit {
   pageSize = 9;
   paginatedProducts: any[] = [];
   totalPages = 0;
+
+  wishlistIds: number[] = [];
 
   constructor(
     private productService: ProductService,
@@ -41,13 +43,16 @@ export class ShopComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.titleService.setTitle('Shop - E-Shop');
-    this.products = this.productService.getAllProducts();
+    this.fetchCategories();
+    this.loadWishlist();
 
     this.route.queryParams.subscribe(params => {
       if (params['category']) {
-        this.selectedCategory = params['category'];
+        this.selectedCategory = +params['category'];
+        this.fetchProductsByCategory(this.selectedCategory);
+      } else {
+        this.fetchFilteredProducts();
       }
-      this.updatePagination();
     });
   }
 
@@ -55,13 +60,30 @@ export class ShopComponent implements OnInit, AfterViewInit {
     AOS.init({ duration: 600, once: true });
   }
 
-  filteredProducts() {
-    return this.products.filter(p => {
-      const matchCategory = !this.selectedCategory || p.category?.toLowerCase() === this.selectedCategory.toLowerCase();
-      const matchSize = this.selectedSizes.length === 0 || this.selectedSizes.includes(p.size);
-      const matchColor = !this.selectedColor || p.color === this.selectedColor;
-      const matchSearch = !this.searchQuery || p.name.toLowerCase().includes(this.searchQuery.toLowerCase());
-      return matchCategory && matchSize && matchColor && matchSearch;
+  fetchCategories() {
+    this.productService.getAllCategories().subscribe(data => {
+      this.categories = data;
+    });
+  }
+
+  fetchProductsByCategory(categoryId: number) {
+    this.productService.getProductsByCategory(categoryId).subscribe(data => {
+      this.products = data;
+      this.updatePagination();
+    });
+  }
+
+  fetchFilteredProducts() {
+    const filters = {
+      name: this.searchQuery,
+      category_id: this.selectedCategory !== '' ? this.selectedCategory : null,
+      sizes: this.selectedSizes,
+      color: this.selectedColor
+    };
+
+    this.productService.filterProducts(filters).subscribe(data => {
+      this.products = data;
+      this.updatePagination();
     });
   }
 
@@ -71,11 +93,11 @@ export class ShopComponent implements OnInit, AfterViewInit {
     } else {
       this.selectedSizes = this.selectedSizes.filter(s => s !== size);
     }
-    this.onSearchChange();
+    this.fetchFilteredProducts();
   }
 
   updatePagination() {
-    const allFiltered = this.filteredProducts();
+    const allFiltered = this.products;
     this.totalPages = Math.ceil(allFiltered.length / this.pageSize);
     const start = (this.currentPage - 1) * this.pageSize;
     const end = start + this.pageSize;
@@ -84,7 +106,7 @@ export class ShopComponent implements OnInit, AfterViewInit {
 
   onSearchChange() {
     this.currentPage = 1;
-    this.updatePagination();
+    this.fetchFilteredProducts();
   }
 
   goToPage(page: number) {
@@ -116,21 +138,34 @@ export class ShopComponent implements OnInit, AfterViewInit {
     this.selectedColor = '';
     this.searchQuery = '';
     this.currentPage = 1;
-    this.updatePagination();
+    this.fetchFilteredProducts();
+  }
+
+  loadWishlist() {
+    this.wishlistService.getWishlistFromAPI().subscribe(data => {
+      const products = data.map((item: any) => item.product);
+      this.wishlistService.setWishlist(products);
+      this.wishlistIds = this.wishlistService.getWishlistIds();
+    });
   }
 
   toggleWishlist(product: any) {
     const isInList = this.isInWishlist(product.id);
-    this.wishlistService.toggleWishlist(product);
 
     if (isInList) {
-      this.notificationService.show(`💔 Removed ${product.name} from wishlist`);
+      this.wishlistService.removeFromWishlist(product.id).subscribe(() => {
+        this.wishlistIds = this.wishlistIds.filter(id => id !== product.id);
+        this.notificationService.show(`💔 Removed ${product.name} from wishlist`);
+      });
     } else {
-      this.notificationService.show(`❤️ Added ${product.name} to wishlist`);
+      this.wishlistService.addToWishlist(product.id).subscribe(() => {
+        this.wishlistIds.push(product.id);
+        this.notificationService.show(`❤️ Added ${product.name} to wishlist`);
+      });
     }
   }
 
   isInWishlist(id: number): boolean {
-    return this.wishlistService.isInWishlist(id);
+    return this.wishlistIds.includes(id);
   }
 }

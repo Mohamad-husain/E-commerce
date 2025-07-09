@@ -1,8 +1,8 @@
 <div class="container py-5">
   <h2 class="text-center mb-4 fw-bold" data-aos="fade-down">Checkout</h2>
 
-  <div class="row g-5">
-    <div class="col-md-6" data-aos="fade-right">
+  <div class="row justify-content-center">
+    <div class="col-lg-8" data-aos="fade-right">
       <h4 class="checkout-section-title fw-semibold mb-3">Shipping Information</h4>
       <form #shippingForm="ngForm" class="checkout-form">
         <div class="mb-3">
@@ -28,32 +28,8 @@
           </div>
         </div>
         <div class="mb-3">
-          <label class="form-label">Postal Code</label>
+          <label class="form-label">Phone</label>
           <input type="text" class="form-control" [(ngModel)]="shipping.zip" name="zip" required>
-        </div>
-      </form>
-    </div>
-
-    <div class="col-md-6" data-aos="fade-left">
-      <h4 class="checkout-section-title fw-semibold mb-3">Payment Details</h4>
-      <form #paymentForm="ngForm" class="checkout-form">
-        <div class="mb-3">
-          <label class="form-label">Cardholder Name</label>
-          <input type="text" class="form-control" [(ngModel)]="payment.name" name="cardName" required>
-        </div>
-        <div class="mb-3">
-          <label class="form-label">Card Number</label>
-          <input type="text" class="form-control" [(ngModel)]="payment.cardNumber" name="cardNumber" required>
-        </div>
-        <div class="row">
-          <div class="col-md-6 mb-3">
-            <label class="form-label">Expiry</label>
-            <input type="text" class="form-control" placeholder="MM/YY" [(ngModel)]="payment.expiry" name="expiry" required>
-          </div>
-          <div class="col-md-6 mb-3">
-            <label class="form-label">CVV</label>
-            <input type="text" class="form-control" [(ngModel)]="payment.cvv" name="cvv" required>
-          </div>
         </div>
       </form>
 
