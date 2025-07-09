@@ -25,6 +25,7 @@ class DashboardController extends Controller
     {
         $range = $request->query('range', 'Last Month');
         $query = Order::query();
+
         switch ($range) {
             case 'Today':
                 $query->whereDate('created_at', Carbon::today());
@@ -43,12 +44,12 @@ class DashboardController extends Controller
             default:
                 $query->whereMonth('created_at', now()->subMonth()->month)
                     ->whereYear('created_at', now()->subMonth()->year);
-                $groupFormat = '%M'; // Month name like "April"
+                $groupFormat = '%Y-%m-%d';
                 break;
         }
 
-        $orders = $query->selectRaw("DATE_FORMAT(created_at, '{$groupFormat}') as label, COUNT(*) as count")
-            ->groupBy('label')
+        $orders = $query->selectRaw("DATE_FORMAT(created_at, '{$groupFormat}') as label, status, COUNT(*) as count")
+            ->groupBy('label', 'status')
             ->orderBy('label')
             ->get();
 

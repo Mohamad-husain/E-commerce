@@ -126,7 +126,8 @@
 .Btn:hover .sign {
   width: 30%;
   transition-duration: .3s;
-  padding-left: 20px;
+  margin-right: 10px;
+
 }
 
 .Btn:hover .text {

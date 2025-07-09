@@ -19,7 +19,7 @@ export class AdminDashboardComponent implements OnInit {
   latestOrders: any[] = [];
 
   chartRanges = ['Today', 'Last Week', 'Last Month'];
-  selectedRange = 'Last Month';
+  selectedRange = 'Today';
 
   barChartType: ChartType = 'bar';
   pieChartType: ChartType = 'pie';
@@ -68,9 +68,19 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   updateCharts() {
-    this.dashboardService.getOrdersPerMonth(this.selectedRange).subscribe(orders => {
-      const labels = orders.map((o: any) => o.label);
-      const orderData = orders.map((o: any) => o.count);
+    this.dashboardService.getOrdersPerMonth(this.selectedRange).subscribe((orders: any[]) => {
+      const labels = orders.map(o => o.label);
+      const orderData = orders.map(o => o.count);
+
+      const colorMap: any = {
+        'Pending': '#ffc107',
+        'Processing': '#0d6efd',
+        'Shipped': '#0dcaf0',
+        'Delivered': '#198754',
+        'Cancelled': '#dc3545'
+      };
+
+      const backgroundColors = orders.map(o => colorMap[o.status] || '#6c757d');
 
       this.barChartData = {
         labels,
@@ -78,27 +88,39 @@ export class AdminDashboardComponent implements OnInit {
           {
             label: 'Orders',
             data: orderData,
-            backgroundColor: '#dc3545',
+            backgroundColor: backgroundColors,
             borderRadius: 8
           }
         ]
       };
     });
 
+
     this.dashboardService.getOrderStatusBreakdown(this.selectedRange).subscribe(statusData => {
       const labels = statusData.map((s: any) => s.status);
       const data = statusData.map((s: any) => s.count);
+
+      const colorMap: any = {
+        'Pending': '#ffc107',
+        'Processing': '#0d6efd',
+        'Shipped': '#0dcaf0',
+        'Delivered': '#198754',
+        'Cancelled': '#dc3545'
+      };
+
+      const backgroundColors = labels.map((status: string) => colorMap[status] || '#6c757d');
 
       this.pieChartData = {
         labels,
         datasets: [
           {
             data,
-            backgroundColor: ['#198754', '#ffc107', '#dc3545']
+            backgroundColor: backgroundColors
           }
         ]
       };
     });
+
 
     this.dashboardService.getUsersAndSales(this.selectedRange).subscribe((salesData: any) => {
       const labels = salesData.map((d: any) => d.label);
