@@ -78,6 +78,7 @@ Route::put('/admin/updateProduct/{id}/variations', [AdminProductController::clas
 Route::post('/admin/updateProduct/{id}/variation', [AdminProductController::class, 'AddVariation']);
 Route::delete('/admin/updateProduct/{variationId}/variation', [AdminProductController::class, 'DeleteVariation']);
 Route::get('/admin/filter-products', [AdminProductController::class, 'FilterProducts']);
+Route::get('/admin/categories', [AdminProductController::class, 'getAllCategories']);
 
 
 // Admin Order

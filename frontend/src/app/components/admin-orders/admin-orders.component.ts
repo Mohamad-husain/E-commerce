@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import AOS from 'aos';
 import { NotificationService } from '../../services/notification/notification.service';
-import { AdminOrderService } from '../../services/order/admin-order.service';
+import { AdminOrderService } from '../../services/admin/order/admin-order.service';
 
 declare var bootstrap: any;
 

@@ -19,6 +19,7 @@
     <input type="text"
            class="form-control border-start-0 shadow-sm"
            [(ngModel)]="searchTerm"
+           (ngModelChange)="onSearchChange()"
            placeholder="Search by name or category..." />
   </div>
 
@@ -39,12 +40,15 @@
           </tr>
           </thead>
           <tbody>
-          <tr *ngFor="let product of filteredProducts; let i = index" class="text-center">
-            <td><img [src]="product.image" alt="Product" class="product-img" /></td>
+          <tr *ngFor="let product of products; let i = index" class="text-center">
+            <td>
+              <img [src]="product.image?.startsWith('http') ? product.image : 'http://127.0.0.1:8000/storage/' + product.image"
+                   alt="Product" class="product-img" />
+            </td>
             <td class="fw-semibold text-dark">{{ product.name }}</td>
             <td class="text-success fw-bold">${{ product.price | number:'1.2-2' }}</td>
             <td class="text-danger fw-bold">{{ product.discount || 0 }}%</td>
-            <td>{{ product.category }}</td>
+            <td>{{ product.category?.name || 'N/A' }}</td>
             <td>
               <button class="btn btn-outline-primary btn-sm rounded-pill px-3" (click)="openInventoryModal(i)">
                 <i class="bi bi-box-seam me-1"></i>
@@ -54,9 +58,9 @@
             <td>
               <span class="status-badge d-inline-block text-center" style="min-width: 100px;"
                     [ngClass]="{
-                  'available-badge': product.status === 'Available',
-                  'outofstock-badge': product.status === 'Out of Stock'
-                }">
+                      'available-badge': product.status === 'Available',
+                      'outofstock-badge': product.status === 'Out of Stock'
+                    }">
                 {{ product.status }}
               </span>
             </td>
@@ -120,12 +124,10 @@
                 </div>
                 <div class="mb-3">
                   <label class="form-label fw-semibold">Category</label>
-                  <select class="form-select" [(ngModel)]="editedProduct.category" name="category" required>
-                    <option value="Footwear">Footwear</option>
-                    <option value="Clothing">Clothing</option>
-                    <option value="Accessories">Accessories</option>
-                    <option value="Sports">Sports</option>
+                  <select class="form-select" [(ngModel)]="editedProduct.category_id" name="category" required>
+                    <option *ngFor="let cat of categories" [value]="cat.id">{{ cat.name }}</option>
                   </select>
+
                 </div>
               </div>
               <div class="col-md-6">
@@ -140,8 +142,8 @@
                   <label class="form-label fw-semibold">Upload Image</label>
                   <input type="file" class="form-control" (change)="handleImageUpload($event, 'edit')" accept="image/*">
                   <div class="mt-2">
-                    <img [src]="editedProduct.image" alt="Product Image" class="img-thumbnail" style="max-height: 150px;" *ngIf="editedProduct.image">
-                  </div>
+                    <img [src]="isTempImage(editedProduct.image) ? editedProduct.image : 'http://127.0.0.1:8000/storage/' + editedProduct.image"
+                         alt="Product Image" class="img-thumbnail" style="max-height: 150px;" *ngIf="editedProduct.image">                  </div>
                 </div>
               </div>
             </div>
@@ -181,11 +183,8 @@
                 </div>
                 <div class="mb-3">
                   <label class="form-label fw-semibold">Category</label>
-                  <select class="form-select" [(ngModel)]="newProduct.category" name="category" required>
-                    <option value="Footwear">Footwear</option>
-                    <option value="Clothing">Clothing</option>
-                    <option value="Accessories">Accessories</option>
-                    <option value="Sports">Sports</option>
+                  <select class="form-select" [(ngModel)]="newProduct.category_id" name="category" required>
+                    <option *ngFor="let cat of categories" [value]="cat.id">{{ cat.name }}</option>
                   </select>
                 </div>
               </div>
@@ -227,11 +226,12 @@
         <div class="modal-body">
           <div class="row">
             <div class="col-md-4">
-              <img [src]="selectedProduct.image" alt="Product" class="img-fluid rounded mb-3 border">
+              <img [src]="isTempImage(selectedProduct.image) ? selectedProduct.image : 'http://127.0.0.1:8000/storage/' + selectedProduct.image"
+                   alt="Product" class="img-fluid rounded mb-3 border">
               <div class="card mb-3">
                 <div class="card-body">
                   <h5 class="card-title fw-bold">{{selectedProduct.name}}</h5>
-                  <p class="card-text text-muted">{{selectedProduct.category}}</p>
+                  <p class="card-text text-muted">{{selectedProduct.category?.name || 'N/A'}}</p>
                   <h5 class="text-success fw-bold">${{selectedProduct.price | number:'1.2-2'}}</h5>
                   <p class="text-danger fw-bold">Discount: {{selectedProduct.discount || 0}}%</p>
                   <span class="status-badge d-block my-2" style="width: 100%;"
