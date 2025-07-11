@@ -3,7 +3,8 @@ import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import AOS from 'aos';
-import { NotificationService } from '../../services/notification/notification.service'; // ✅ استدعاء الخدمة
+import { NotificationService } from '../../services/notification/notification.service';
+import { ProfileService } from '../../services/profile/profile.service';
 
 @Component({
   selector: 'app-edit-profile',
@@ -13,30 +14,63 @@ import { NotificationService } from '../../services/notification/notification.se
   styleUrls: ['./edit-profile.component.css']
 })
 export class EditProfileComponent implements OnInit {
+  loading = true;
+
   user = {
-    name: 'Mohammad Hussain',
-    email: 'Mohammad@gmail.com',
-    phone: '+972598610880',
-    address: 'Nablus, Palestine'
+    phone: '',
+    city: '',
+    country: '',
+    birth_date: '',
+    gender: '',
+    bio: '',
+
   };
 
   constructor(
     private router: Router,
+    private profileService: ProfileService,
     private notificationService: NotificationService
   ) {}
 
   ngOnInit(): void {
     AOS.init({ duration: 600, once: true });
+
+    // جلب بيانات المستخدم لتعبئة الفورم
+    this.profileService.getProfile().subscribe({
+      next: (res) => {
+        this.user = {
+          phone: res.profile?.phone || '',
+          city: res.profile?.city || '',
+          country: res.profile?.country || '',
+          birth_date: res.profile?.birth_date || '',
+          gender: res.profile?.gender || '',
+          bio: res.profile?.bio || '',
+        };
+        this.loading = false;
+      },
+      error: () => {
+        this.notificationService.show('❌ Failed to load profile data.');
+        this.loading = false;
+      }
+    });
   }
 
-  saveChanges() {
-    this.notificationService.show('✅ Profile updated successfully!');
-    setTimeout(() => {
-      this.router.navigate(['/profile']);
-    }, 1000);
+  saveChanges(): void {
+    this.profileService.updateProfile(this.user).subscribe({
+      next: (res) => {
+        this.notificationService.show('✅ Profile updated successfully!');
+        setTimeout(() => {
+          this.router.navigate(['/profile']);
+        }, 1000);
+      },
+      error: (err) => {
+        console.error(err);
+        this.notificationService.show('❌ Failed to update profile.');
+      }
+    });
   }
 
-  cancel() {
+  cancel(): void {
     this.router.navigate(['/profile']);
   }
 }

@@ -15,31 +15,34 @@ use Illuminate\Support\Str;
 class UserController extends Controller
 {
 
-    public function register(Request $request)
-    {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'phone' => 'required|string',
-            'address' => 'required|string',
-            'password' => 'required|string|min:6|confirmed',
-        ]);
+   public function register(Request $request)
+{
+    $validated = $request->validate([
+        'name' => 'required|string|max:255',
+        'email' => 'required|string|email|max:255|unique:users',
+        'phone' => 'required|string',
+        'address' => 'required|string',
+        'password' => 'required|string|min:6|confirmed',
+    ]);
 
-        $user = User::create([
-            'name' => $validated['name'],
-            'email' => $validated['email'],
-            'phone' => $validated['phone'],
-            'address' => $validated['address'],
-            'password' => Hash::make($validated['password']),
-            'role_id' => 2,
-        ]);
+    $user = User::create([
+        'name' => $validated['name'],
+        'email' => $validated['email'],
+        'phone' => $validated['phone'],
+        'address' => $validated['address'],
+        'password' => Hash::make($validated['password']),
+        'role_id' => 2,
+    ]);
 
-        return response()->json([
-            'status' => true,
-            'message' => 'User registered successfully.',
-            'user' => $user
-        ], 201);
-    }
+
+    $user->profile()->create();
+
+    return response()->json([
+        'status' => true,
+        'message' => 'User registered successfully.',
+        'user' => $user
+    ], 201);
+}
 
 
     public function login(Request $request)
