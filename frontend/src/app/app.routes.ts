@@ -25,6 +25,7 @@ import {AdminOrdersComponent} from './components/admin-orders/admin-orders.compo
 import {AdminUsersComponent} from './components/admin-users/admin-users.component';
 import {ColorHarmonyComponent} from './components/color-harmony/color-harmony.component';
 import { ChangePasswordComponent } from './components/change-password/change-password.component';
+import {AdminCategoryComponent} from './components/admin-category/admin-category.component';
 export const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'shop', component: ShopComponent },
@@ -50,6 +51,7 @@ export const routes: Routes = [
   { path: 'admin/products', component: AdminProductsComponent },
   { path: 'admin/orders', component: AdminOrdersComponent},
   { path: 'admin/users',component: AdminUsersComponent },
+  { path: 'admin/category',component: AdminCategoryComponent },
   { path: 'color-harmony', component: ColorHarmonyComponent},
   {path:'change-password',component:ChangePasswordComponent}
 ];
