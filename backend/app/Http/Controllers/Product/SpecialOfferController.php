@@ -8,7 +8,6 @@ use Illuminate\Support\Carbon;
 
 class SpecialOfferController extends Controller
 {
-    // جلب المنتجات المرتبطة بفئات فيها عروض فعالة
     public function getProductsWithOffers()
     {
         $now = Carbon::now();
