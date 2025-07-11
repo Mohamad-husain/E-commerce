@@ -42,4 +42,10 @@ class Product extends Model
     {
         return $this->hasMany(ProductVariation::class);
     }
+
+    public function offers()
+    {
+        return $this->hasMany(Offer::class);
+    }
+
 }
