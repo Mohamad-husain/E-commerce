@@ -18,8 +18,8 @@ import { Title } from '@angular/platform-browser';
 export class ShopComponent implements OnInit, AfterViewInit {
   products: any[] = [];
   categories: any[] = [];
-  sizes = ['S', 'M', 'L', 'XL', 'One Size'];
-  colors = ['Red', 'Blue', 'Black', 'Brown'];
+  sizes: string[] = [];
+  colors: string[] = [];
 
   selectedCategory: number | '' = '';
   selectedSizes: string[] = [];
@@ -45,6 +45,7 @@ export class ShopComponent implements OnInit, AfterViewInit {
     this.titleService.setTitle('Shop - E-Shop');
     this.fetchCategories();
     this.loadWishlist();
+    this.fetchSizesAndColors();
 
     this.route.queryParams.subscribe(params => {
       if (params['category']) {
@@ -63,6 +64,13 @@ export class ShopComponent implements OnInit, AfterViewInit {
   fetchCategories() {
     this.productService.getAllCategories().subscribe(data => {
       this.categories = data;
+    });
+  }
+
+  fetchSizesAndColors() {
+    this.productService.getAllSizesAndColors().subscribe(data => {
+      this.sizes = data.sizes;
+      this.colors = data.colors;
     });
   }
 

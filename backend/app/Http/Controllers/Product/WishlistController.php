@@ -8,14 +8,20 @@ use Illuminate\Http\Request;
 
 class WishlistController extends Controller
 {
-    public function index()
-    {
+    public function index() {
         $wishlist = WishlistItem::with('product')->get();
+
+        $wishlist->transform(function ($item) {
+            $product = $item->product;
+            if ($product) {
+                $product->image = asset('storage/' . $product->image);
+            }
+            return $item;
+        });
         return response()->json($wishlist);
     }
 
-    public function store(Request $request)
-    {
+    public function store(Request $request) {
         $request->validate([
             'product_id' => 'required|exists:products,id'
         ]);
@@ -28,8 +34,7 @@ class WishlistController extends Controller
         return response()->json(['message' => 'Product added to wishlist', 'data' => $item], 201);
     }
 
-    public function destroy($id)
-    {
+    public function destroy($id) {
         $item = WishlistItem::where('user_id', 1)
         ->where('product_id', $id)
             ->first();

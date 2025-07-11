@@ -11,7 +11,8 @@ class Category extends Model
 
     protected $fillable = [
         'name',
-        'slug'
+        'slug',
+        'image'
     ];
 
     public function products()
@@ -19,8 +20,4 @@ class Category extends Model
         return $this->hasMany(Product::class);
     }
 
-    public function offers()
-    {
-        return $this->hasMany(Offer::class);
-    }
 }

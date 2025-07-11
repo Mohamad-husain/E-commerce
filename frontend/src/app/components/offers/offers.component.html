@@ -2,18 +2,32 @@
   <h2 class="text-center fw-bold mb-4" data-aos="fade-up">Offers</h2>
 
   <div class="row g-4">
-    <div class="col-md-4" *ngFor="let offer of offers" data-aos="zoom-in-up" data-aos-delay="100">
+    <div class="col-md-4" *ngFor="let product of offers" data-aos="zoom-in-up" data-aos-delay="100">
       <div class="card h-100 shadow-sm offer-card">
-        <img [src]="offer.image" class="image card-img-top" alt="{{ offer.title }}">
+        <img [src]="product.image" class="image card-img-top" alt="{{ product.name }}" style="height: 250px; object-fit: cover;">
+
         <div class="card-body text-center d-flex flex-column">
-          <h5 class="card-title">{{ offer.title }}</h5>
-          <p class="card-text flex-grow-1">{{ offer.description }}</p>
+          <h5 class="card-title">{{ product.name }}</h5>
+
+          <p class="card-text text-muted mb-1">
+            <span style="text-decoration: line-through;">
+              {{ product.price | currency }}
+            </span>
+          </p>
+
+          <p class="card-text text-success fw-bold mb-2 fs-5">
+            {{ product.price * (1 - product.discount / 100) | currency }}
+          </p>
+
+          <p class="card-text text-danger small fw-semibold mb-2">
+            -{{ product.discount }}% OFF
+          </p>
+
           <a
-            [routerLink]="['/shop']"
-            [queryParams]="{ category: offer.category }"
-            class="btn btn-outline-danger shop-now-btn mt-auto"
+            class="btn btn-dark mt-auto"
+            [routerLink]="['/product', product.id]"
           >
-            Shop Now
+            View Details
           </a>
         </div>
       </div>

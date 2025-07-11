@@ -44,4 +44,13 @@ export class ProductService {
   getProductsByCategory(categoryId: number): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}/categories/${categoryId}/products`);
   }
+
+  getAllSizesAndColors(): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/variations`);
+  }
+
+  getProductsWithOffers(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/products-with-offers`);
+  }
+
 }

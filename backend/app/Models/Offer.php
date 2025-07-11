@@ -10,14 +10,14 @@ class Offer extends Model
     use HasFactory;
 
     protected $fillable = [
-        'category_id',
+        'product_id',
         'title',
         'discount',
         'start',
         'end'];
 
-    public function category()
+    public function product()
     {
-        return $this->belongsTo(Category::class);
+        return $this->belongsTo(Product::class);
     }
 }
