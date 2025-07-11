@@ -35,7 +35,7 @@ export class RegisterComponent {
     this.authService.register(data).subscribe({
       next: (res) => {
         console.log('Registration successful', res);
-         localStorage.setItem('token', res.token); // لو بيرجع توكن
+         localStorage.setItem('token', res.token)
         this.router.navigate(['/']);
       },
       error: (err) => {
