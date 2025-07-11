@@ -13,6 +13,7 @@ use App\Http\Controllers\Product\WishlistController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\Admin\CategoryController;
 
 
 
@@ -95,6 +96,13 @@ Route::delete('/admin/users/{id}', [AdminUserController::class, 'deleteUser']);
 Route::put('/admin/users/{id}/toggle-role', [AdminUserController::class, 'toggleRole']);
 Route::get('/admin/users/filter', [AdminUserController::class, 'filterUsers']);
 
+//Admin Category
+Route::get('/admin/categories', [CategoryController::class, 'index']);
+Route::post('/admin/categories', [CategoryController::class, 'store']);
+Route::put('/admin/categories/{category}', [CategoryController::class, 'update']);
+Route::delete('/admin/categories/{category}', [CategoryController::class, 'destroy']);
+Route::get('/admin/categories/search', [CategoryController::class, 'searchCategory']);
+
 
 //profile
 Route::middleware('auth:sanctum')->group(function () {
@@ -106,3 +114,4 @@ Route::middleware('auth:sanctum')->group(function () {
 //contact
 Route::post('/contact', [ContactController::class, 'store']);
 Route::get('/contact', [ContactController::class, 'index']);
+

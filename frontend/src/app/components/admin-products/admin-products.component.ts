@@ -5,6 +5,7 @@ import { RouterLink } from '@angular/router';
 import AOS from 'aos';
 import { AdminProductService } from '../../services/admin/product/admin-product.service';
 import { NotificationService } from '../../services/notification/notification.service';
+import { ActivatedRoute } from '@angular/router';
 
 declare var bootstrap: any;
 
@@ -63,13 +64,39 @@ export class AdminProductsComponent implements OnInit {
   addVariationModal: any;
   newVariation: ProductVariation = { color: '', size: '', quantity: 0 };
 
-  constructor(private productService: AdminProductService, private notificationService: NotificationService) {}
+  constructor(
+  private productService: AdminProductService,
+  private notificationService: NotificationService,
+  private route: ActivatedRoute
+) {}
+
 
   ngOnInit(): void {
-    AOS.init({ duration: 600, once: true });
-    this.fetchProducts();
-    this.fetchCategories();
-  }
+  AOS.init({ duration: 600, once: true });
+
+  this.route.queryParams.subscribe(params => {
+    const categoryId = params['categoryId'];
+    if (categoryId) {
+      this.fetchCategoriesAndFilter(Number(categoryId));
+    } else {
+      this.fetchProducts();
+    }
+  });
+
+  this.fetchCategories();
+}
+fetchCategoriesAndFilter(categoryId: number): void {
+  this.productService.getAllCategories().subscribe((res: Category[]) => {
+    this.categories = res;
+    const selected = this.categories.find(c => c.id === categoryId);
+    if (selected) {
+      this.searchTerm = selected.name;
+      this.fetchProducts();
+    }
+  });
+}
+
+
   onSearchChange() {
     this.fetchProducts();
   }
